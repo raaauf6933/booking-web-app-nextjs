@@ -17,11 +17,45 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: #fff;
+  
 }
+
+
+.main-image {
+  width: auto;
+  height: 600px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.main-image img {
+  min-width: 2000px;
+  position: relative;
+  bottom: 15em;
+}
+
+.overlay {
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  top: 0px;
+  opacity: 0.4;
+  color: #f1f1f1;
+  background-color: black;
+  width: 100%;
+  transition: .5s ease;
+  text-align: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+}
+
+.main-content-image img {
+  width: 20em;
+  height: 30em;
+}
+
+
