@@ -2,12 +2,10 @@ import MainAboutUs from '@components/MainAboutUs';
 import MainContainer from '@components/MainContainer';
 import MainHeader from '@components/MainHeader';
 
-
 export const metadata = {
   title: 'About Us',
   description: '...',
 };
-
 
 function AboutUsPage(params) {
   return (

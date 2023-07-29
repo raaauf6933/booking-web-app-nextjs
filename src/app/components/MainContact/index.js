@@ -43,16 +43,14 @@ function MainContact(params) {
             </div>
           </div>
           <div className="mt-10">
-            <div className='overflow-hidden'>
-
-           
-            <iframe
-              width={1200}
-              height={450}
-              frameborder="0"
-              src="https://www.google.com/maps/embed/v1/place?q=grand+villa+resort+pateros&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-            ></iframe>
-             </div>
+            <div className="overflow-hidden">
+              <iframe
+                width={1200}
+                height={450}
+                frameborder="0"
+                src="https://www.google.com/maps/embed/v1/place?q=grand+villa+resort+pateros&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+              ></iframe>
+            </div>
           </div>
         </div>
       </Card>

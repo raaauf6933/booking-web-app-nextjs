@@ -7,7 +7,6 @@ export const metadata = {
   description: '...',
 };
 
-
 function AmenitiesPage(params) {
   return (
     <>
