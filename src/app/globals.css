@@ -7,6 +7,9 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
+html, body, main {
+   overscroll-behavior-y: none;
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -24,7 +27,6 @@ body {
 
 .main-image {
   width: auto;
-  height: 600px;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -59,3 +61,8 @@ body {
 }
 
 
+.main-room-card {
+  min-width: auto;
+  width: auto;
+  max-width: 27em;
+}

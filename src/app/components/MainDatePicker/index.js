@@ -15,7 +15,7 @@ const MainDatePicker = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="relative bottom-20 lg:w-4/6 w-5/6 lg:px-16 ">
+      <div className="relative bottom-28 lg:w-full w-full lg:px-16 ">
         <Card className="shadow-xl p-4">
           <Row gutter={[16, 24]} justify="center" align="bottom">
             <Col xs={24} sm={24} md={8} xl={8}>

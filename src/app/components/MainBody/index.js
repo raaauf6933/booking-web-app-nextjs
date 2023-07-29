@@ -76,7 +76,7 @@ const MainBody = () => {
             </div>
             <span className="text-4xl font-normal">Events</span>
           </div>
-          <span className="text-lg font-light opacity-50 leading-7">
+          <span className="text-lg  leading-7">
             If you're planning a special event or dream wedding, our elegant
             event spaces provide the perfect backdrop for creating cherished
             memories. Our dedicated events team will work with you to tailor

@@ -1,21 +1,22 @@
-import MainBody from '@components/MainBody';
+import MainContact from '@components/MainContact';
 import MainContainer from '@components/MainContainer';
-import MainDatePicker from '@components/MainDatePicker';
 import MainHeader from '@components/MainHeader';
 
 export const metadata = {
-  title: 'Home',
+  title: 'Contact',
   description: '...',
 };
 
-export default function Home() {
+
+function ContactPage(params) {
   return (
     <>
-      <MainHeader primary />
+      <MainHeader title="Contact" />
       <MainContainer>
-        <MainDatePicker />
-        <MainBody />
+        <MainContact />
       </MainContainer>
     </>
   );
 }
+
+export default ContactPage;
