@@ -1,5 +1,5 @@
 'use client';
-import Navbar from '@components/Navbar';
+import Navbar from '../Navbar';
 import { Carousel } from 'antd';
 import image1 from '@assets/image/image_1.jpeg';
 import image2 from '@assets/image/image_2.jpeg';

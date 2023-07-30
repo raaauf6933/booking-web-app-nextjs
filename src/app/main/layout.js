@@ -1,9 +1,8 @@
 'use client';
 import './../globals.css';
-import MainHeader from '@components/MainHeader';
 import { Barlow_Condensed } from 'next/font/google';
-import MainFooter from '@components/MainFooter';
-import Navbar from '@components/Navbar';
+import MainFooter from './components/MainFooter';
+import Navbar from './components/Navbar';
 
 const inter = Barlow_Condensed({ weight: '600', subsets: ['latin'] });
 
@@ -13,7 +12,7 @@ export default function Layout({ children }) {
       <Navbar />
       {children}
       <div className={inter.className}>
-        <MainFooter />{' '}
+        <MainFooter />
       </div>
     </>
   );

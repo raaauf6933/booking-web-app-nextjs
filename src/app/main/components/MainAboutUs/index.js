@@ -8,7 +8,7 @@ const MainAboutUs = () => {
       <Row>
         <Col sm={24} md={12} lg={12}>
           <div className="h-100 bg-center bg-no-repeat bg-cover overflow-hidden pr-10 flex-auto">
-            <Img
+            <img
               className="rounded-2xl "
               src="https://res.cloudinary.com/dwnnnqffb/image/upload/v1690520960/t44uxmoatq5psgrwrhfa.jpg"
               loading="eager"

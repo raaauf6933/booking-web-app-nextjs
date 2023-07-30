@@ -1,6 +1,6 @@
 'use client';
-import Card from '@components/AntD/card';
-import DatePicker from '@components/AntD/datepicker';
+import Card from '../AntD/card';
+import DatePicker from '../AntD/datepicker';
 import { Button, Col, Row } from 'antd';
 import React from 'react';
 

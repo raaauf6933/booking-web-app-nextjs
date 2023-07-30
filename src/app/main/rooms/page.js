@@ -1,6 +1,6 @@
-import MainContainer from '@components/MainContainer';
-import MainHeader from '@components/MainHeader';
-import MainRoomCard from '@components/MainRoomCard';
+import MainContainer from '../components/MainContainer';
+import MainHeader from '../components/MainHeader';
+import MainRoomCard from '../components/MainRoomCard';
 
 export const metadata = {
   title: 'Rooms',

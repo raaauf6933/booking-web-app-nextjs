@@ -1,7 +1,7 @@
-import MainBody from '@components/MainBody';
-import MainContainer from '@components/MainContainer';
-import MainDatePicker from '@components/MainDatePicker';
-import MainHeader from '@components/MainHeader';
+import MainBody from './components/MainBody';
+import MainContainer from './components/MainContainer';
+import MainDatePicker from './components/MainDatePicker';
+import MainHeader from './components/MainHeader';
 
 export const metadata = {
   title: 'Home',
