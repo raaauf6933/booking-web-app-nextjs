@@ -1,5 +1,5 @@
+import { getServerSession } from 'next-auth';
 import LoginPageComponent from '../../components/LoginPageComponent';
-
 export const metadata = {
   title: 'Login',
   description: '...',

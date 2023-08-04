@@ -1,8 +1,15 @@
 'use client';
 import { Button, Card, Input } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { signIn } from 'next-auth/react';
 
 function LoginPageComponent(params) {
+  const handleSubmit = async () => {
+    const result = await signIn();
+
+    console.log(result);
+  };
+
   return (
     <div className="flex flex-1 bg-light">
       <div className="w-1/3 mx-auto my-auto shadow-lg rounded-lg">
@@ -21,7 +28,12 @@ function LoginPageComponent(params) {
               placeholder="Password"
               prefix={<LockOutlined />}
             />
-            <Button size="large" className="w-10/12 bg-info" shape="round">
+            <Button
+              size="large"
+              onClick={handleSubmit}
+              className="w-10/12 bg-info"
+              shape="round"
+            >
               {' '}
               <span className="text-white text-lg">Login</span>
             </Button>

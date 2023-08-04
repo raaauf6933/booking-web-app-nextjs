@@ -1,5 +1,13 @@
-const Bookings = () => {
-  return <h1>test</h1>;
+import Bookings from "../../containers/Bookings";
+
+
+export const metadata = {
+  title: 'Bookings',
+  description: '...',
+}
+
+const BookingsPage = () => {
+  return <Bookings/>;
 };
 
-export default Bookings;
+export default BookingsPage;

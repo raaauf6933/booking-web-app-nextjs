@@ -1,5 +1,14 @@
-const RoomsManagement = () => {
-  return <h1>test</h1>;
+import RoomManagement from "../../containers/RoomManagement";
+
+
+export const metadata = {
+  title: 'Rooms Management',
+  description: '...',
+}
+
+
+const RoomsManagementPage = () => {
+  return <RoomManagement/>
 };
 
-export default RoomsManagement;
+export default RoomsManagementPage;

@@ -1,5 +1,14 @@
-const Configurations = () => {
-  return <h1>test</h1>;
+import Configuration from "../../containers/Configuration";
+
+
+export const metadata = {
+  title: 'Configurations',
+  description: '...',
+}
+
+
+const ConfugrationsPage = () => {
+  return <Configuration/>;
 };
 
-export default Configurations;
+export default ConfugrationsPage;
