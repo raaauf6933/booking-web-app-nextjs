@@ -1,24 +1,36 @@
 import { Tag } from 'antd';
 
 const StatusTag = (props) => {
-  const { status, type } = props;
+  const { status, type, className } = props;
 
   if (type === 'BOOKING') {
     switch (status) {
       case 'PENDING':
-        return <Tag color="warning">Pending</Tag>;
+        return (
+          <Tag className={className} color="warning">
+            Pending
+          </Tag>
+        );
 
       default:
-        return <Tag></Tag>;
+        return <Tag className={className}></Tag>;
     }
   } else {
     switch (status) {
       case 'ACTIVE':
-        return <Tag color="success">ACTIVE</Tag>;
+        return (
+          <Tag className={className} color="success">
+            ACTIVE
+          </Tag>
+        );
       case 'INACTIVE':
-        return <Tag color="error">IN-ACTIVE</Tag>;
+        return (
+          <Tag className={className} color="error">
+            IN-ACTIVE
+          </Tag>
+        );
       default:
-        return <Tag></Tag>;
+        return <Tag className={className}></Tag>;
     }
   }
 };

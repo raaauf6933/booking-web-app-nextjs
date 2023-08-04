@@ -1,13 +1,12 @@
-import Bookings from "../../containers/Bookings";
-
+import Bookings from '../../containers/Bookings';
 
 export const metadata = {
   title: 'Bookings',
   description: '...',
-}
+};
 
 const BookingsPage = () => {
-  return <Bookings/>;
+  return <Bookings />;
 };
 
 export default BookingsPage;

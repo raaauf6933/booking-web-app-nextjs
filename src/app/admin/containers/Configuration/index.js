@@ -3,8 +3,6 @@ import { Card, Col, Row } from 'antd';
 import { MdCategory } from 'react-icons/md';
 import { AiFillTags } from 'react-icons/ai';
 
-
-
 const Configuration = () => {
   return (
     <>

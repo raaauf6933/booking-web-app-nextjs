@@ -1,9 +1,7 @@
-import BookingDetails from "../../../containers/BookingDetails";
-
-
+import BookingDetails from '../../../containers/BookingDetails';
 
 const BookingDetailsPage = () => {
-    return <BookingDetails/>;
-}
- 
+  return <BookingDetails />;
+};
+
 export default BookingDetailsPage;

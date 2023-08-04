@@ -1,14 +1,12 @@
-import RoomManagement from "../../containers/RoomManagement";
-
+import RoomManagement from '../../containers/RoomManagement';
 
 export const metadata = {
   title: 'Rooms Management',
   description: '...',
-}
-
+};
 
 const RoomsManagementPage = () => {
-  return <RoomManagement/>
+  return <RoomManagement />;
 };
 
 export default RoomsManagementPage;

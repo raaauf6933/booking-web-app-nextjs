@@ -1,5 +1,5 @@
 'use client';
-import './../globals.css';
+import './../../globals.css';
 import { Barlow_Condensed } from 'next/font/google';
 import MainFooter from './components/MainFooter';
 import Navbar from './components/Navbar';

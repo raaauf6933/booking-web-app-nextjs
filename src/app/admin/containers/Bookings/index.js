@@ -1,6 +1,7 @@
 'use client';
-import { Table } from 'antd';
+import { Table, Typography } from 'antd';
 import StatusTag from '../../components/StatusTag';
+import { useRouter } from 'next/navigation';
 
 const columns = [
   {
@@ -89,9 +90,20 @@ const dataSource = [
 ];
 
 const Bookings = () => {
+  const navigate = useRouter();
+
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} />
+      <Typography.Title>Bookings</Typography.Title>
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        onRow={(e) => ({
+          onClick: () =>
+            navigate.push(`/admin/bookings/${e.booking_reference}`),
+        })}
+        rowClassName="cursor-pointer"
+      />
     </div>
   );
 };

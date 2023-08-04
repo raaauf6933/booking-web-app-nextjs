@@ -1,14 +1,12 @@
-import Configuration from "../../containers/Configuration";
-
+import Configuration from '../../containers/Configuration';
 
 export const metadata = {
   title: 'Configurations',
   description: '...',
-}
-
+};
 
 const ConfugrationsPage = () => {
-  return <Configuration/>;
+  return <Configuration />;
 };
 
 export default ConfugrationsPage;

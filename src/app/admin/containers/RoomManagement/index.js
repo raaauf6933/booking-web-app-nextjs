@@ -11,10 +11,13 @@ const columns = [
   {
     title: 'Rate',
     render: (_, record) => (
-        <>
-          {new Intl.NumberFormat('en-PH', {  style: 'currency', currency: 'PHP' }).format(record.rate)}
-        </>
-      ),
+      <>
+        {new Intl.NumberFormat('en-PH', {
+          style: 'currency',
+          currency: 'PHP',
+        }).format(record.rate)}
+      </>
+    ),
     key: 'rate',
   },
   {

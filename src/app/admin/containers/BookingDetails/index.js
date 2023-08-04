@@ -1,63 +1,60 @@
-import { Card, Col, Divider, Row } from 'antd';
+import { Button, Card, Col, Divider, Row } from 'antd';
+import PaymentDetails from '../../components/BookingDetails/PaymentDetails';
+import RoomDetails from '../../components/BookingDetails/RoomDetails';
+import GuestDetails from '../../components/BookingDetails/GuestDetails';
+import StatusTag from '../../components/StatusTag';
+import History from '../../components/BookingDetails/History';
 
 const BookingDetails = () => {
   return (
     <>
-      <Row gutter={[12, 12]}>
-        <Col sm={24} md={16} lg={16}>
+      <div className="block relative">
+        <div>
+          <StatusTag
+            type="BOOKING"
+            status="PENDING"
+            className="text-2xl mb-5 px-4 py-1 rounded-3xl"
+          />
           <Row gutter={[12, 12]}>
-            <Col md={24} lg={24}>
-              <Card title="Room Details"></Card>
+            <Col sm={24} md={16} lg={16}>
+              <Row gutter={[12, 12]}>
+                <Col md={24} lg={24}>
+                  <RoomDetails />
+                </Col>
+                <Col md={24} lg={24}>
+                  <PaymentDetails />
+                </Col>
+                <Col md={24} lg={24}>
+                  <History />
+                </Col>
+              </Row>
             </Col>
-            <Col md={24} lg={24}>
-              <Card title="Payment Details">
-                <div>
-                  <div className="flex justify-between">
-                    <span>Sub-Total (rooms)</span>
-                    <span>PHP 1,200.00 X 3 night(s)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Additional Amount</span>
-                    <span>PHP 1,200.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Discount</span>
-                    <span>PHP 0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className='font-bold'>Total Amount</span>
-                    <span>PHP 3,600.00</span>
-                  </div>
-                  <Divider/>
-                  <div className="flex justify-between">
-                    <span className='font-bold'>Captured Amount</span>
-                    <span>PHP 0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Oustanding Balance</span>
-                    <span>PHP 0.00</span>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={24}>
-              <Card title="Booking History"></Card>
+            <Col sm={24} md={8} lg={8}>
+              <Row gutter={[12, 12]}>
+                <Col md={24} lg={24}>
+                  <GuestDetails />
+                </Col>
+                <Col md={24} lg={24}>
+                  <Card title="Additionals"></Card>
+                </Col>
+              </Row>
             </Col>
           </Row>
-        </Col>
-        <Col sm={24} md={8} lg={8}>
-          <Row gutter={[12, 12]}>
-            <Col md={24} lg={24}>
-              <Card title="Guest Details">
-                
-              </Card>
-            </Col>
-            <Col md={24} lg={24}>
-              <Card title="Additionals"></Card>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+        </div>
+
+        <div className="fixed bottom-0">
+          <div className="bg-white shadow-2xl drop-shadow-2xl shadow-black p-4 w-screen max-w-xs md:max-w-7xl">
+            <div className="flex justify-between">
+              <Button className="bg-white text-black" type="default">
+                BACK
+              </Button>
+              <Button className="bg-info text-white" type="primary">
+                CONFIRMED
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
