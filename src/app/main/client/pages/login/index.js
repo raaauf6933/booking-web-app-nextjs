@@ -39,7 +39,7 @@ const Login = () => {
           className="bg-white flex h-screen flex-1"
           style={{
             background:
-              'linear-gradient(90deg, rgba(255,166,0,1) 13%, rgba(114,74,0,1) 39%, rgba(0,0,0,1) 88%);',
+              'linear-gradient(90deg, rgba(255,166,0,1) 13%, rgba(114,74,0,1) 39%, rgba(0,0,0,1) 88%)',
           }}
         >
           <div className="w-2/4 mx-auto  my-auto">
