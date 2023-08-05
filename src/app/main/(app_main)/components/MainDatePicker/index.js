@@ -6,9 +6,14 @@ import React from 'react';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { useRouter } from 'next/navigation';
 dayjs.extend(customParseFormat);
 
 const MainDatePicker = () => {
+
+
+  const navigate = useRouter()
+
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
@@ -47,6 +52,7 @@ const MainDatePicker = () => {
               <Button
                 className="w-full bg-warning border-white focus:border-white outline-none  h-16"
                 type="default"
+                onClick={()=> navigate.push("/main/booking/select_room")}
               >
                 <span className="text-white text-lg">Check Availability</span>
               </Button>

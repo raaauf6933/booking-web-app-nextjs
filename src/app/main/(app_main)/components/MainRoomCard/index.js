@@ -1,12 +1,30 @@
 'use client';
 import { Button, Image } from 'antd';
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import { Barlow_Condensed } from 'next/font/google';
+const inter = Barlow_Condensed({ weight: '100', subsets: ['latin'] });
 
 const MainRoomCard = (props) => {
-  const { image } = props;
+  const { image, size, type } = props;
+
+  const ActionComponent = () => {
+    if (type === 'SELECT_ROOM') {
+      return <></>;
+    } else {
+      return (
+        <Button className="text-base w-auto pb-7">
+          <div className="flex justify-center items-center">
+            <span>Book Now</span>
+            <MdKeyboardArrowRight className="text-xl" />
+          </div>{' '}
+        </Button>
+      );
+    }
+  };
+
   return (
     <>
-      <div className="flex flex-col md:flex-row ">
+      <div className="flex flex-col md:flex-row " style={inter.style}>
         <div className="main-room-card  mr-10">
           <Image.PreviewGroup
           // items={[
@@ -32,7 +50,7 @@ const MainRoomCard = (props) => {
             <span className="text-2xl ">Capacity</span>
             <span className="text-2xl "> : Max Person 4</span>
           </div>
-          <div className="pb-3">
+          <div className="pb-3 h-28 overflow-y-scroll mb-7">
             <p className="text-lg">
               Sink into the plush, king-sized bed, adorned with premium-quality
               linens that guarantee a restful night's sleep. The thoughtful
@@ -43,12 +61,13 @@ const MainRoomCard = (props) => {
             </p>
           </div>
           <div>
-            <Button className="text-base w-auto pb-7">
+            {ActionComponent()}
+            {/* <Button className="text-base w-auto pb-7">
               <div className="flex justify-center items-center">
                 <span>Book Now</span>
                 <MdKeyboardArrowRight className="text-xl" />
               </div>{' '}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

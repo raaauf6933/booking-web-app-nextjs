@@ -35,12 +35,12 @@ const MainBody = () => {
         </Col>
         <Col xs={24} sm={24} md={12}>
           <div className="flex">
-            {/* <div className="main-content-image">
+            <div className="main-content-image">
               <img src={img1.src} />
             </div>
             <div className="main-content-image p-6">
               <img src={img2.src} />
-            </div> */}
+            </div>
           </div>
         </Col>
       </Row>

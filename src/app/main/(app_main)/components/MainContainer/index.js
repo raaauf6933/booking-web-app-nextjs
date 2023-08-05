@@ -3,13 +3,13 @@ import classNames from 'classnames';
 
 const inter = Barlow_Condensed({ weight: '100', subsets: ['latin'] });
 
-const MainContainer = ({ children }) => {
+const MainContainer = ({ children, size }) => {
   return (
     <main
-      className={classNames(
-        'flex flex-col px-10 lg:px-64 py-10 ',
-        inter.className,
-      )}
+      className={classNames('flex flex-col px-10 py-10 ', inter.className, {
+        ['lg:px-64']: size === 'lg' || !size,
+        ['lg:px-32']: size === 'sm',
+      })}
     >
       {children}
     </main>
