@@ -1,4 +1,4 @@
-import MyBookings from '../../../pages/MyBookings';
+import MyBookings from '../../../../pages/MyBookings';
 
 const Bookings = () => {
   return <MyBookings />;

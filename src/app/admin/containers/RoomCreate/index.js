@@ -249,7 +249,7 @@ const RoomForm = () => {
                   defaultValues={room_data?.data?.images}
                   onChange={(images) => setValue('images', images)}
                   getLoadingStatus={(isLoading) => {
-                    console.log(isLoading);
+                 
                     setUploadLoading(isLoading);
                   }}
                 />

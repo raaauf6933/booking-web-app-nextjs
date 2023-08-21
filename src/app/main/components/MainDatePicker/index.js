@@ -2,18 +2,50 @@
 import Card from '../AntD/card';
 import DatePicker from '../AntD/datepicker';
 import { Button, Col, Row } from 'antd';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useRouter } from 'next/navigation';
+import BookingContext from '../../context/booking/bookingContext';
+import { hasNull } from '../../../utils/hasNull';
 dayjs.extend(customParseFormat);
 
 const MainDatePicker = () => {
   const navigate = useRouter();
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
+  const { bookingState, bookingDispatch } = useContext(BookingContext);
+  const [dates, setDates] = React.useState({
+    check_in: '' || bookingState.check_in,
+    check_out: '' || bookingState.check_out,
+  });
+
+
+
+  const onChangeCheckIn = (date, dateString) => {
+    setDates((prevState) => ({ ...prevState, check_in: dateString }));
+
+    if (
+      dates.check_out &&
+      new Date(dates.check_in) < new Date(dates.check_out)
+    ) {
+      setDates((prevState) => ({ ...prevState, check_out: '' }));
+    }
+  };
+
+  const onChangeCheckOut = (date, dateString) => {
+    setDates((prevState) => ({ ...prevState, check_out: dateString }));
+  };
+
+  const handleSubmitDate = () => {
+    if (!hasNull(dates)) {
+      bookingDispatch({
+        type: 'SET_DATES',
+        payload: dates,
+      });
+
+      navigate.push('/main/booking/select_room');
+    }
   };
 
   return (
@@ -27,8 +59,11 @@ const MainDatePicker = () => {
                   <label>CHECK-IN</label>
                 </div>
                 <DatePicker
+                  value={
+                    dates.check_in ? dayjs(dates.check_in, 'YYYY-MM-DD') : null
+                  }
                   disabledDate={(current) => current && current.$d < new Date()}
-                  onChange={onChange}
+                  onChange={onChangeCheckIn}
                   className="h-16 w-full"
                   showToday={false}
                 />
@@ -40,7 +75,17 @@ const MainDatePicker = () => {
                   <label>CHECK-OUT</label>
                 </div>
                 <DatePicker
-                  onChange={onChange}
+                  value={
+                    dates.check_out
+                      ? dayjs(dates.check_out, 'YYYY-MM-DD')
+                      : null
+                  }
+                  disabled={!dates.check_in}
+                  disabledDate={(current) =>
+                    current &&
+                    current.$d < new Date(dates.check_in).setHours(24)
+                  }
+                  onChange={onChangeCheckOut}
                   className="h-16 w-full"
                   showToday={false}
                 />
@@ -50,7 +95,7 @@ const MainDatePicker = () => {
               <Button
                 className="w-full bg-warning border-white focus:border-white outline-none  h-16"
                 type="default"
-                onClick={() => navigate.push('/main/booking/select_room')}
+                onClick={() => handleSubmitDate()}
               >
                 <span className="text-white text-lg">Check Availability</span>
               </Button>

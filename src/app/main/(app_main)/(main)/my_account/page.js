@@ -1,4 +1,4 @@
-const { default: MyAccount } = require('../../pages/MyAccount');
+const { default: MyAccount } = require('../../../pages/MyAccount');
 
 const MyAccountPage = () => {
   return (

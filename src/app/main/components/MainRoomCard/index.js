@@ -2,19 +2,38 @@
 import { Button, Col, Image, Row } from 'antd';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Barlow_Condensed } from 'next/font/google';
+import BookingContext from '../../context/booking/bookingContext';
+import { useContext } from 'react';
 const inter = Barlow_Condensed({ weight: '100', subsets: ['latin'] });
 
 const MainRoomCard = (props) => {
   const { image, size, type, data } = props;
-console.log(image)
+  const { bookingState, bookingDispatch } = useContext(BookingContext);
+
+  const handleAddRoom = () => {
+    bookingDispatch({
+      type: "ADD_ROOM",
+      payload: {
+        room_id: data.rooms.find(()=> true)._id,
+        roomtype_id: data._id,
+        room_amount: data.room_rate,
+        roomtype_name: data.name,
+        room_num: data.rooms.find(()=> true).room_number,
+        no_person: data.details.no_person,
+      },
+    });
+  }
+
   const ActionComponent = () => {
-    if (type === 'SELECT_ROOM') {
+    if (type !== 'SELECT_ROOM') {
       return <></>;
-    } else {
+    } else if(data.rooms.length === 0){
+        return <><span className='text-2xl font-bold '>No Available Room</span></>
+    }else {
       return (
-        <Button className="text-base w-auto pb-7">
+        <Button className="text-base w-auto pb-7" onClick={handleAddRoom} disabled={bookingState.room_details.some((e)=> e.room_id === data.rooms.find(()=> true)._id)}>
           <div className="flex justify-center items-center">
-            <span>Book Now</span>
+            <span>Book This Room</span>
             <MdKeyboardArrowRight className="text-xl" />
           </div>{' '}
         </Button>
@@ -24,7 +43,7 @@ console.log(image)
 
   return (
     <>
-      <Row>
+      <Row gutter={[0,26]}>
         <Col xs={24} sm={24} md={12} lg={12}>
           <div className="pb-5">
             {' '}
@@ -67,7 +86,7 @@ console.log(image)
                 : Max Person {data.details.no_person}
               </span>
             </div>
-            <div className="pb-3 h-28 overflow-y-scroll mb-7">
+            <div className=" h-28 overflow-y-scroll mb-7">
               <p className="text-lg">
                 {data.details.description}
                 {/* Sink into the plush, king-sized bed, adorned with premium-quality

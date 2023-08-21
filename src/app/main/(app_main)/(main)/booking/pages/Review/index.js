@@ -1,5 +1,8 @@
 'use client';
 import { Row, Col, Table, Button, Divider, Radio } from 'antd';
+import { useContext, useEffect } from 'react';
+import BookingContext from '../../../../../context/booking/bookingContext';
+import { useRouter } from 'next/navigation';
 
 const columns = [
   {
@@ -35,6 +38,73 @@ const dataSource = [
 ];
 
 const Review = () => {
+  const { bookingState } = useContext(BookingContext);
+  const navigate = useRouter();
+
+  const handleGetNoNights = () => {
+    const date1 = new Date(bookingState.check_in);
+    const date2 = new Date(bookingState.check_out);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  };
+
+  const getNoQuantity = (roomtype_id) => {
+    return bookingState.room_details.filter(
+      (obj) => obj.roomtype_id === roomtype_id,
+    ).length;
+  };
+
+  const getRoomAmount = (roomtype_id, rate) => {
+    const roomTotalAmount = parseInt(getNoQuantity(roomtype_id)) * rate;
+    return roomTotalAmount;
+  };
+
+  const handleGetRooms = () => {
+    const removeDuplicates = bookingState.room_details.filter(
+      (v, i, a) => a.findIndex((t) => t.roomtype_id === v.roomtype_id) === i,
+    );
+
+    const countRooms = removeDuplicates.map((e) => {
+      return {
+        room_name: e.roomtype_name,
+        rate: e.room_amount,
+        qty: getNoQuantity(e.roomtype_id),
+        amount: getRoomAmount(e.roomtype_id, e.room_amount),
+      };
+    });
+
+    return countRooms;
+  };
+
+  const getSubTotal = () => {
+    let total = 0;
+    handleGetRooms().map((e) => (total += e.amount));
+    return total;
+  };
+
+  const getTotalAmount = () => {
+    return getSubTotal() * handleGetNoNights();
+  };
+
+  const handleVat = () => {
+    const vatable_sales = getTotalAmount() / 1.12;
+    const vat = getTotalAmount() - vatable_sales;
+
+    return {
+      vatable_sales,
+      vat,
+    };
+  };
+
+
+  useEffect(() => {
+    if (bookingState.room_details.length < 1) {
+      navigate.push('/main');
+    }
+  }, []);
+
   return (
     <>
       <div className="my-20 mx-5 w-full ">
@@ -92,7 +162,19 @@ const Review = () => {
             <div className="mt-5">
               <Table
                 className="overflow-x-scroll"
-                dataSource={dataSource}
+                dataSource={bookingState.room_details.map((e, index) => ({
+                  key: index,
+                  room: e.roomtype_name,
+                  rate: new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(e.room_amount),
+                  qty: 1,
+                  amount: new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(e.room_amount),
+                }))}
                 columns={columns}
                 pagination={false}
                 //   rootClassName='o'
@@ -104,15 +186,25 @@ const Review = () => {
             <div className="mt-2">
               <div className="flex justify-between">
                 <span className="font-bold text-md">Sub-total</span>
-                <span className="text-md">PHP 1,798.00 X 1 (Nights)</span>
+                <span className="text-md"> {new Intl.NumberFormat('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(getSubTotal())}{' '}
+              X {handleGetNoNights()} (Nights)</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-md">Vatable Sale </span>
-                <span className="text-md">PHP 1,605.36</span>
+                <span className="text-md">{new Intl.NumberFormat('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(handleVat().vatable_sales)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-md">VAT</span>
-                <span className="text-md">PHP 192.64</span>
+                <span className="text-md">{new Intl.NumberFormat('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(handleVat().vat)}</span>
               </div>
             </div>
             <Divider orientation="center">
@@ -127,11 +219,11 @@ const Review = () => {
           </div>
           <div className="w-full flex flex-col md:flex-row lg:flex-row">
             <div className="flex flex-col items-center w-full bg-warning text-4xl p-2 border-r-2 border-r-light">
-              <span>DOWNPAYMENT</span>
+              <span className="opacity-70">DOWNPAYMENT</span>
               <span className="text-white">PHP 899.00</span>
             </div>
             <div className="flex flex-col items-center whitespace-nowrap w-full bg-warning text-4xl p-2">
-              <span>TOTAL AMOUNT</span>
+              <span className="opacity-70">TOTAL AMOUNT</span>
               <span className="text-white">PHP 1,798.00</span>
             </div>
           </div>
