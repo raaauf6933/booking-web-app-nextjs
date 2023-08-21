@@ -4,6 +4,7 @@ import RoomDetails from '../../components/BookingDetails/RoomDetails';
 import GuestDetails from '../../components/BookingDetails/GuestDetails';
 import StatusTag from '../../components/StatusTag';
 import History from '../../components/BookingDetails/History';
+import ActionBar from '../../components/ActionBar';
 
 const BookingDetails = () => {
   return (
@@ -42,18 +43,7 @@ const BookingDetails = () => {
           </Row>
         </div>
 
-        <div className="fixed bottom-0">
-          <div className="bg-white shadow-2xl drop-shadow-2xl shadow-black p-4 w-screen max-w-xs md:max-w-7xl">
-            <div className="flex justify-between">
-              <Button className="bg-white text-black" type="default">
-                BACK
-              </Button>
-              <Button className="bg-info text-white" type="primary">
-                CONFIRMED
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ActionBar />
       </div>
     </>
   );

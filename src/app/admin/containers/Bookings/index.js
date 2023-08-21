@@ -2,6 +2,7 @@
 import { Table, Typography } from 'antd';
 import StatusTag from '../../components/StatusTag';
 import { useRouter } from 'next/navigation';
+import Header from '../../components/Header';
 
 const columns = [
   {
@@ -94,7 +95,7 @@ const Bookings = () => {
 
   return (
     <div>
-      <Typography.Title>Bookings</Typography.Title>
+      <Header title="Bookings" />
       <Table
         dataSource={dataSource}
         columns={columns}

@@ -1,6 +1,6 @@
 'use client';
 import { Steps } from 'antd';
-import MainContainer from '../components/MainContainer';
+import MainContainer from '../../components/MainContainer';
 
 const description = 'This is a description.';
 

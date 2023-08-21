@@ -1,7 +1,9 @@
+const { default: MyAccount } = require('../../pages/MyAccount');
+
 const MyAccountPage = () => {
   return (
     <>
-      <h1>test</h1>
+      <MyAccount />
     </>
   );
 };

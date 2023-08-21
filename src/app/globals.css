@@ -9,6 +9,7 @@
 }
 html, body, main {
    overscroll-behavior-y: none;
+   height: fit-content;
 }
 
 @media (prefers-color-scheme: dark) {

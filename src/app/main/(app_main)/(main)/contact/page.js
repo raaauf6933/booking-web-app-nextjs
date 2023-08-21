@@ -1,6 +1,6 @@
-import MainContact from '../../components/MainContact';
-import MainContainer from '../../components/MainContainer';
-import MainHeader from '../../components/MainHeader';
+import MainContact from '../../../components/MainContact';
+import MainContainer from '../../../components/MainContainer';
+import MainHeader from '../../../components/MainHeader';
 
 export const metadata = {
   title: 'Contact',

@@ -1,6 +1,6 @@
-import MainAmenities from '../../components/MainAmenities';
-import MainContainer from '../../components/MainContainer';
-import MainHeader from '../../components/MainHeader';
+import MainAmenities from '../../../components/MainAmenities';
+import MainContainer from '../../../components/MainContainer';
+import MainHeader from '../../../components/MainHeader';
 
 export const metadata = {
   title: 'Amenities',

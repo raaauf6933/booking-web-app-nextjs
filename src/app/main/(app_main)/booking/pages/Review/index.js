@@ -1,5 +1,5 @@
 'use client';
-import { Row, Col, Table, Button } from 'antd';
+import { Row, Col, Table, Button, Divider, Radio } from 'antd';
 
 const columns = [
   {
@@ -88,6 +88,7 @@ const Review = () => {
                 </div>
               </Col>
             </Row>
+
             <div className="mt-5">
               <Table
                 className="overflow-x-scroll"
@@ -97,22 +98,33 @@ const Review = () => {
                 //   rootClassName='o'
               />
             </div>
+            <Divider orientation="center">
+              <span className="font-semibold">Breakdown</span>
+            </Divider>
             <div className="mt-2">
               <div className="flex justify-between">
-                <span className="font-bold text-2xl">Sub-total</span>
-                <span className="text-2xl">PHP 1,798.00 X 1 (Nights)</span>
+                <span className="font-bold text-md">Sub-total</span>
+                <span className="text-md">PHP 1,798.00 X 1 (Nights)</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-bold text-2xl">Vatable Sale </span>
-                <span className="text-2xl">PHP 1,605.36</span>
+                <span className="font-bold text-md">Vatable Sale </span>
+                <span className="text-md">PHP 1,605.36</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-bold text-2xl">VAT</span>
-                <span className="text-2xl">PHP 192.64</span>
+                <span className="font-bold text-md">VAT</span>
+                <span className="text-md">PHP 192.64</span>
               </div>
             </div>
+            <Divider orientation="center">
+              <span className="font-semibold">Payment Type</span>
+            </Divider>
+            <div>
+              <Radio.Group>
+                <Radio value="DOWNPAYMENT">Downpayment (50%)</Radio>
+                <Radio value="FULL_PAYMENT">Full-Payment</Radio>
+              </Radio.Group>
+            </div>
           </div>
-
           <div className="w-full flex flex-col md:flex-row lg:flex-row">
             <div className="flex flex-col items-center w-full bg-warning text-4xl p-2 border-r-2 border-r-light">
               <span>DOWNPAYMENT</span>
