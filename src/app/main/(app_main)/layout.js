@@ -2,7 +2,7 @@
 import './../../globals.css';
 import { BookingProvider } from '../context/booking/bookingContext';
 import { AuthContextProvider } from '../context/auth/context';
-
+import { NotificationContextProvider } from './../context/notification/context';
 const inter = {
   style: null,
 };
@@ -11,9 +11,11 @@ const inter = {
 export default function Layout({ children }) {
   return (
     <>
-      <AuthContextProvider>
-        <BookingProvider>{children}</BookingProvider>
-      </AuthContextProvider>
+      <NotificationContextProvider>
+        <AuthContextProvider>
+          <BookingProvider>{children}</BookingProvider>
+        </AuthContextProvider>
+      </NotificationContextProvider>
     </>
   );
 }

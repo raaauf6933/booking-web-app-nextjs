@@ -3,6 +3,7 @@ import { Tag } from 'antd';
 const StatusTag = (props) => {
   const { status, type, className } = props;
 
+  console.log(status)
   if (type === 'BOOKING') {
     switch (status) {
       case 'PENDING':
@@ -11,6 +12,12 @@ const StatusTag = (props) => {
             Pending
           </Tag>
         );
+        case 'EXPIRED':
+          return (
+            <Tag className={className} color="error">
+              Expired
+            </Tag>
+          );
 
       default:
         return <Tag className={className}></Tag>;

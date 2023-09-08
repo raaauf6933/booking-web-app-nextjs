@@ -2,26 +2,17 @@
 
 "use client";
 import LoginForm from '@main_components/LoginForm';
-import { useClientAuth } from '../../context/auth/context';
 import RegistartionForm from '@main_components/RegistrationForm';
 
 const ClientAuthForm = (props) => {
   const {type} = props;
-  const {login} = useClientAuth()
-
-  const handleLogin = () => {
-    login({
-      email:"",
-      password:""
-    })
-  }
 
   return (
     <>
       <div className="flex flex-wrap flex-row ">
         <div className="bg-black flex h-screen flex-1">
           <div className="w-2/4 mx-auto  my-auto">
-            {type === "LOGIN" ? <LoginForm onLogin={handleLogin}/> : <RegistartionForm/>}
+            {type === "LOGIN" ? <LoginForm /> : <RegistartionForm/>}
           </div>
         </div>
         <div

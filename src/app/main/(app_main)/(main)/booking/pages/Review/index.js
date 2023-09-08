@@ -1,8 +1,12 @@
 'use client';
 import { Row, Col, Table, Button, Divider, Radio } from 'antd';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BookingContext from '../../../../../context/booking/bookingContext';
 import { useRouter } from 'next/navigation';
+import useFetch from '../../../../../../hooks/useFetch';
+import { useClientAuth } from '../../../../../context/auth/context';
+import usePost from '../../../../../../hooks/usePost';
+import { useNotification } from '../../../../../context/notification/context';
 
 const columns = [
   {
@@ -38,8 +42,79 @@ const dataSource = [
 ];
 
 const Review = () => {
-  const { bookingState } = useContext(BookingContext);
+  const { bookingState, bookingDispatch } = useContext(BookingContext);
   const navigate = useRouter();
+  const { user } = useClientAuth();
+  const [paymentType, setPaymentType] = useState(null);
+  const { notif } = useNotification();
+
+  const { response } = useFetch({
+    method: 'GET',
+    url: '/customers/customer',
+    params: {
+      id: user?._id,
+    },
+  });
+
+  const customer = response?.data;
+
+
+  const [createBooking, createBookingOpts] = usePost({
+    onComplete: (e) => {
+      bookingDispatch({
+        type: 'SET_BOOKING_SUCCESS',
+        payload: e?.data?.booking_reference,
+      });
+
+      notif['success']({
+        message: 'Booking Success, We have sent you an email. Thank you for booking with us',
+      });
+
+      navigate.push('/main');
+    },
+    onError: (error) => {
+      if (error?.data?.code === 'ROOM_TAKEN') {
+        notif['info']({
+          message: 'Login first',
+        });
+
+        navigate.push('/main');
+      } else {
+        notif['error']({
+          message: 'Internal Server Error',
+        });
+        navigate.push('/main');
+      }
+    },
+  });
+
+  const handleSave = async () => {
+    const data = {
+      ...bookingState,
+      check_in: bookingState.check_in,
+      check_out: bookingState.check_out,
+      rooms: bookingState.room_details,
+      totalAmount: getTotalAmount(),
+      guest: {
+        customer_id: customer?._id,
+        first_name: customer?.first_name,
+        last_name: customer?.last_name,
+        email: customer?.email,
+        contact_number: customer?.contact_number,
+        no_guest: 1,
+        street_address: customer?.address?.address,
+        province: '',
+        city: customer?.address?.city,
+      },
+      payment_type: paymentType,
+    };
+
+    await createBooking({
+      method: 'POST',
+      url: '/booking/create_booking',
+      data,
+    });
+  };
 
   const handleGetNoNights = () => {
     const date1 = new Date(bookingState.check_in);
@@ -98,7 +173,6 @@ const Review = () => {
     };
   };
 
-
   useEffect(() => {
     if (bookingState.room_details.length < 1) {
       navigate.push('/main');
@@ -117,19 +191,23 @@ const Review = () => {
                   <div className="mt-2">
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">Name:</span>
-                      <span>Stephen Curry</span>
+                      <span>
+                        {customer?.first_name} {customer?.last_name}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-bold mb-2">Mobile Number:</span>
-                      <span>09066000801</span>
+                      <span className="font-bold mb-2">Contact Number:</span>
+                      <span>{customer?.contact_number}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">Email:</span>
-                      <span>stephen.curry@gmail.com</span>
+                      <span>{customer?.email}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">Address:</span>
-                      <span>Taguig City</span>
+                      <span>
+                        {customer?.address?.address} {customer?.address?.city}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -140,15 +218,20 @@ const Review = () => {
                   <div className="mt-2">
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">Check-in:</span>
-                      <span>Aug 13, 2023 02:00PM</span>
+                      <span>
+                        {new Date(bookingState.check_in).toDateString()} 02:00PM
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">Check-Out:</span>
-                      <span>Aug 14, 2023 12:00PM</span>
+                      <span>
+                        {new Date(bookingState.check_out).toDateString()}{' '}
+                        12:00PM
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">No. Night(s)</span>
-                      <span>1</span>
+                      <span>{handleGetNoNights()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">No. Guest</span>
@@ -186,32 +269,39 @@ const Review = () => {
             <div className="mt-2">
               <div className="flex justify-between">
                 <span className="font-bold text-md">Sub-total</span>
-                <span className="text-md"> {new Intl.NumberFormat('en-PH', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(getSubTotal())}{' '}
-              X {handleGetNoNights()} (Nights)</span>
+                <span className="text-md">
+                  {' '}
+                  {new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(getSubTotal())}{' '}
+                  X {handleGetNoNights()} (Nights)
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-md">Vatable Sale </span>
-                <span className="text-md">{new Intl.NumberFormat('en-PH', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(handleVat().vatable_sales)}</span>
+                <span className="text-md">
+                  {new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(handleVat().vatable_sales)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-md">VAT</span>
-                <span className="text-md">{new Intl.NumberFormat('en-PH', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(handleVat().vat)}</span>
+                <span className="text-md">
+                  {new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(handleVat().vat)}
+                </span>
               </div>
             </div>
             <Divider orientation="center">
               <span className="font-semibold">Payment Type</span>
             </Divider>
             <div>
-              <Radio.Group>
+              <Radio.Group onChange={(e) => setPaymentType(e.target.value)}>
                 <Radio value="DOWNPAYMENT">Downpayment (50%)</Radio>
                 <Radio value="FULL_PAYMENT">Full-Payment</Radio>
               </Radio.Group>
@@ -220,11 +310,23 @@ const Review = () => {
           <div className="w-full flex flex-col md:flex-row lg:flex-row">
             <div className="flex flex-col items-center w-full bg-warning text-4xl p-2 border-r-2 border-r-light">
               <span className="opacity-70">DOWNPAYMENT</span>
-              <span className="text-white">PHP 899.00</span>
+              <span className="text-white">
+                {paymentType === 'DOWNPAYMENT'
+                  ? new Intl.NumberFormat('en-PH', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(getTotalAmount() / 2)
+                  : '--'}
+              </span>
             </div>
             <div className="flex flex-col items-center whitespace-nowrap w-full bg-warning text-4xl p-2">
               <span className="opacity-70">TOTAL AMOUNT</span>
-              <span className="text-white">PHP 1,798.00</span>
+              <span className="text-white">
+                {new Intl.NumberFormat('en-PH', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(getTotalAmount())}
+              </span>
             </div>
           </div>
         </div>
@@ -232,7 +334,7 @@ const Review = () => {
           <Button size="large" className="mr-3">
             <span>Back</span>
           </Button>
-          <Button size="large">
+          <Button size="large" disabled={!paymentType || createBookingOpts.loading} onClick={handleSave}>
             <span>Confirm</span>
           </Button>
         </div>

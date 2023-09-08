@@ -3,6 +3,7 @@ import { Table, Typography } from 'antd';
 import StatusTag from '../../components/StatusTag';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
+import useFetch from '../../../hooks/useFetch';
 
 const columns = [
   {
@@ -93,15 +94,32 @@ const dataSource = [
 const Bookings = () => {
   const navigate = useRouter();
 
+  const { response } = useFetch({
+    method: "POST",
+    url: 'booking/bookings',
+    data: {
+      status: "ALL"
+    }
+  })
+
+  const bookings = response?.data
+  ? response?.data?.map((booking) => ({
+      ...booking,
+        key: booking?._id,
+        guest: `${booking?.guest?.first_name} ${booking?.guest?.last_name}`,
+        booking_date: new Date(booking?.createdAt).toDateString()
+    }))
+  : [];
+
   return (
     <div>
       <Header title="Bookings" />
       <Table
-        dataSource={dataSource}
+        dataSource={bookings}
         columns={columns}
         onRow={(e) => ({
           onClick: () =>
-            navigate.push(`/admin/bookings/${e.booking_reference}`),
+            navigate.push(`/admin/bookings/${e.key}`),
         })}
         rowClassName="cursor-pointer"
       />

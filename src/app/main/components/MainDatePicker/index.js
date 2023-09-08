@@ -9,17 +9,20 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useRouter } from 'next/navigation';
 import BookingContext from '../../context/booking/bookingContext';
 import { hasNull } from '../../../utils/hasNull';
+import { useNotification } from '../../context/notification/context';
+import { useClientAuth } from '../../context/auth/context';
 dayjs.extend(customParseFormat);
 
 const MainDatePicker = () => {
   const navigate = useRouter();
-
+  const { notif } = useNotification();
   const { bookingState, bookingDispatch } = useContext(BookingContext);
   const [dates, setDates] = React.useState({
     check_in: '' || bookingState.check_in,
     check_out: '' || bookingState.check_out,
   });
 
+  const { isAuthenticated } = useClientAuth()
 
 
   const onChangeCheckIn = (date, dateString) => {
@@ -38,6 +41,18 @@ const MainDatePicker = () => {
   };
 
   const handleSubmitDate = () => {
+    if(!isAuthenticated){
+      notif['info']({
+        message: 'Login first',
+      });
+
+      navigate.push("/main/login");
+
+      return;
+    }
+  
+    
+
     if (!hasNull(dates)) {
       bookingDispatch({
         type: 'SET_DATES',

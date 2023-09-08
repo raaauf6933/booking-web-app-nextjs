@@ -39,10 +39,18 @@ const columns = [
   // },
 ];
 
-const RoomDetails = () => {
+const RoomDetails = ({ booking }) => {
+  const rooms = booking?.rooms
+    ? booking?.rooms.map((e) => ({
+        key: e?.room_id,
+        room: e?.roomtype_name,
+        rate: e?.room_amount,
+      }))
+    : [];
+
   return (
     <Card title="Room Details">
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table dataSource={rooms} columns={columns} pagination={false} />
     </Card>
   );
 };

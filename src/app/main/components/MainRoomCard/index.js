@@ -75,7 +75,7 @@ const MainRoomCard = (props) => {
                 {new Intl.NumberFormat('en-PH', {
                   style: 'currency',
                   currency: 'PHP',
-                }).format(data.room_rate)}
+                }).format(data?.room_rate)}
               </span>
               <span className="text-xl "> / Night</span>
             </div>
@@ -83,12 +83,12 @@ const MainRoomCard = (props) => {
               <span className="text-2xl ">Capacity</span>
               <span className="text-2xl ">
                 {' '}
-                : Max Person {data.details.no_person}
+                : Max Person {data?.details.no_person}
               </span>
             </div>
             <div className=" h-28 overflow-y-scroll mb-7">
               <p className="text-lg">
-                {data.details.description}
+                {data?.details.description}
                 {/* Sink into the plush, king-sized bed, adorned with premium-quality
               linens that guarantee a restful night's sleep. The thoughtful
               touches extend to a selection of fluffy pillows, ensuring your

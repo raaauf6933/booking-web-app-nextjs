@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AUTH_ADMIN, REQUEST_RESET_PASSWORD, RESET_PASSWORD } from './api';
 import jwtDecode from 'jwt-decode';
 import { useRouter } from 'next/navigation';
+import { useNotification } from '../notification/context';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -12,9 +13,13 @@ const AuthContext = React.createContext({});
 
 export function AuthContextProvider({ children }) {
   const navigate = useRouter().push;
+  const router = useRouter();
+  const {notif} = useNotification();
+  const [loading,setLoading] = React.useState(false);
 
   const login = async (formData) => {
     try {
+      setLoading(true)
       let result = await axios.request({
         method: 'POST',
         data: formData,
@@ -24,16 +29,28 @@ export function AuthContextProvider({ children }) {
       setToken(result.data.token);
 
       if (isAuthenticated()) {
-        navigate('/main');
+        navigate('/main/my_account/bookings');
       }
-    } catch (error) {
-      return error?.data?.status;
+      
+    } catch (e) {
+      if (e?.response?.data?.message) {
+        notif['error']({
+          message: e.response.data.message,
+        });
+      } else {
+        notif['error']({
+          message: 'Internal Server Error',
+        });
+      }
+    } finally{
+      setLoading(false)
     }
   };
 
   const logout = () => {
     removeTokens();
-    navigate('/main');
+    router.refresh();
+    navigate("/main")
   };
 
   const requestResetPassword = async (formData) => {
@@ -71,7 +88,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, getUser, requestResetPassword, resetPassword }}
+      value={{ login, logout, getUser, requestResetPassword, resetPassword , loading}}
     >
       {children}
     </AuthContext.Provider>
@@ -79,7 +96,7 @@ export function AuthContextProvider({ children }) {
 }
 
 export const useClientAuth = () => {
-  const { login, logout, getUser, requestResetPassword, resetPassword } =
+  const { login, logout, getUser, requestResetPassword, resetPassword , loading} =
     useContext(AuthContext);
 
   return {
@@ -87,8 +104,10 @@ export const useClientAuth = () => {
     logout,
     requestResetPassword,
     resetPassword,
+    loading,
     isAuthenticated: isAuthenticated(),
     user: getUser(),
+    getUser,
   };
 };
 

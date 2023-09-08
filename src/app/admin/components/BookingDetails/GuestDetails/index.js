@@ -1,32 +1,35 @@
 import { Card } from 'antd';
 
-const GuestDetails = () => {
+const GuestDetails = ({ booking }) => {
+
+  const guest = booking?.guest;
+
   return (
     <Card title="Guest Details">
       <div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Name:</span>
-          <span>Stephen Curry</span>
+          <span>{guest?.first_name} {guest?.last_name}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Phone Number:</span>
-          <span>09066000801</span>
+          <span>{guest?.contact_number}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Email:</span>
-          <span>stephen.curry@gmail.com</span>
+          <span>{guest?.email}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Address:</span>
-          <span>#32 Fairlane</span>
+          <span>{guest?.street_address}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Check-in:</span>
-          <span>May 7, 2023 (Sun)</span>
+          <span>{new Date(booking?.check_in).toDateString()}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Check-out:</span>
-          <span>May 10, 2023 (Wed)</span>
+          <span>{new Date(booking?.check_out).toDateString()}</span>
         </div>
       </div>
     </Card>

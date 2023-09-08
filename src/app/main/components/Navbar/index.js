@@ -1,6 +1,9 @@
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Barlow_Condensed } from 'next/font/google';
+import { CaretDownOutlined } from '@ant-design/icons';
+import { Button, Divider, Dropdown } from 'antd';
+import { useClientAuth } from '../../context/auth/context';
 
 const inter = {
   style: null,
@@ -12,6 +15,8 @@ const inter = {
 
 const Navbar = () => {
   const pathname = usePathname();
+
+  const { user, logout } = useClientAuth();
 
   return (
     <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 shadow-md">
@@ -108,16 +113,64 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="bg-black hidden w-full md:block md:w-auto">
-          <ul className="bg-black font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0">
-            <li>
-              <Link
-                href="/main/login"
-                className="bg-black bg-blue-700 hover:bg-blue-800 rounded-lg block py-2 pl-3 pr-4 text-gray-900  hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+          {user ? (
+            <>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: 1,
+                      label: <Link href="/main/my_account">My Account</Link>,
+                    },
+                    {
+                      key: 2,
+                      label: (
+                        <Link href="/main/my_account/bookings">Bookings</Link>
+                      ),
+                    },
+                    {
+                      type: 'divider',
+                    },
+                    {
+                      key: 3,
+                      label: (
+                        <button type="button" >
+                          <span className="text-danger">Sign out</span>
+                        </button>
+                      ),
+                      onClick:logout
+                    },
+                  ],
+                }}
+                placement="bottomCenter"
               >
-                Login
-              </Link>
-            </li>
-          </ul>
+                <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0">
+                  <button
+                    type="button"
+                    class="bg-warning text-white bg-blue-700 hover:bg-warning hover:opacity-95 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    <div className="flex items-center">
+                      <span className="mr-2">
+                        {user?.first_name} {user?.last_name}
+                      </span>{' '}
+                      <CaretDownOutlined />
+                    </div>
+                  </button>
+                </ul>
+              </Dropdown>
+            </>
+          ) : (
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0">
+              <li>
+                <Link
+                  href="/main/login"
+                  className="bg-black bg-blue-700 hover:bg-blue-800 rounded-lg block py-2 pl-3 pr-4 text-gray-900  hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  Login
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </nav>
