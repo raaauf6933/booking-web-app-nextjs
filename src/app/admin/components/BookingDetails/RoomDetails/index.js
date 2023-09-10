@@ -1,24 +1,16 @@
 'use client';
 import { Card, Table } from 'antd';
 
-const dataSource = [
-  {
-    key: '1',
-    room: 'Deluxe Room',
-    rate: 32,
-  },
-  {
-    key: '2',
-    room: 'Superior Room',
-    rate: 32,
-  },
-];
-
 const columns = [
   {
     title: 'Room',
     dataIndex: 'room',
     key: 'room',
+  },
+  {
+    title: 'Room Number',
+    dataIndex: 'roomNum',
+    key: 'roomNum',
   },
   {
     title: 'Rate',
@@ -44,6 +36,7 @@ const RoomDetails = ({ booking }) => {
     ? booking?.rooms.map((e) => ({
         key: e?.room_id,
         room: e?.roomtype_name,
+        roomNum: e?.room_num,
         rate: e?.room_amount,
       }))
     : [];

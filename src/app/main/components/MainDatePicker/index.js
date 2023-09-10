@@ -41,17 +41,6 @@ const MainDatePicker = () => {
   };
 
   const handleSubmitDate = () => {
-    if(!isAuthenticated){
-      notif['info']({
-        message: 'Login first',
-      });
-
-      navigate.push("/main/login");
-
-      return;
-    }
-  
-    
 
     if (!hasNull(dates)) {
       bookingDispatch({

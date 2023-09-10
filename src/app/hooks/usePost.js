@@ -16,7 +16,7 @@ const usePost = (props) => {
   const [error, setError] = useState();
   const [loading, setloading] = useState(false);
 
-  const callFn = async (params) => {
+  const callFn = async (params, token) => {
     // dispatch({ type: AppStateActionType.START_LOADING });
     setloading(true);
 
@@ -35,6 +35,7 @@ const usePost = (props) => {
         headers: {
           'Content-Type': 'application/json',
           Accept: '*/*',
+          "x-auth-token": token
         },
       });
       setResponse(result);

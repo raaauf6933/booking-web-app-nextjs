@@ -44,7 +44,7 @@ const dataSource = [
 const Review = () => {
   const { bookingState, bookingDispatch } = useContext(BookingContext);
   const navigate = useRouter();
-  const { user } = useClientAuth();
+  const { user, isAuthenticated } = useClientAuth();
   const [paymentType, setPaymentType] = useState(null);
   const { notif } = useNotification();
 
@@ -75,7 +75,7 @@ const Review = () => {
     onError: (error) => {
       if (error?.data?.code === 'ROOM_TAKEN') {
         notif['info']({
-          message: 'Login first',
+          message: 'Some of the rooms you have selected was already taken',
         });
 
         navigate.push('/main');
@@ -174,6 +174,18 @@ const Review = () => {
   };
 
   useEffect(() => {
+
+    if(!isAuthenticated){
+      notif['info']({
+        message: 'Login first',
+      });
+
+      navigate.push("/main/login");
+
+      return;
+    }
+
+    
     if (bookingState.room_details.length < 1) {
       navigate.push('/main');
     }
@@ -245,18 +257,18 @@ const Review = () => {
             <div className="mt-5">
               <Table
                 className="overflow-x-scroll"
-                dataSource={bookingState.room_details.map((e, index) => ({
+                dataSource={handleGetRooms().map((e, index) => ({
                   key: index,
-                  room: e.roomtype_name,
+                  room: e.room_name,
                   rate: new Intl.NumberFormat('en-PH', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(e.room_amount),
-                  qty: 1,
+                  }).format(e.rate),
+                  qty: e.qty,
                   amount: new Intl.NumberFormat('en-PH', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(e.room_amount),
+                  }).format(e.amount),
                 }))}
                 columns={columns}
                 pagination={false}

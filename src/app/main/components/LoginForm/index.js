@@ -3,13 +3,15 @@ import { Button, Input } from 'antd';
 import Link from 'next/link';
 import { useClientAuth } from '../../context/auth/context';
 import { Controller, useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import BookingContext from '../../context/booking/bookingContext';
 
 const LoginForm = () => {
   const navigate = useRouter();
   const { control, handleSubmit } = useForm();
-  const { login, loading, isAuthenticated } = useClientAuth({});
+  const { login, loading, isAuthenticated, } = useClientAuth({});
+  const {  bookingState } = useContext(BookingContext)
 
   const handleLogin = (data) => {
     login({
@@ -20,10 +22,17 @@ const LoginForm = () => {
 
 
   useEffect(()=> {
+    if(isAuthenticated && bookingState?.room_details?.length >= 1){
+      navigate.push("/main/booking/review")
+      return ()=> null;
+
+    }
     if(isAuthenticated){
       navigate.push("/main/my_account/bookings")
+
+      return;
     }
-  },[])
+  },[isAuthenticated])
 
   return (
     <>

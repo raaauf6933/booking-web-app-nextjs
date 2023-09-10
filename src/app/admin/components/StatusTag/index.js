@@ -3,21 +3,45 @@ import { Tag } from 'antd';
 const StatusTag = (props) => {
   const { status, type, className } = props;
 
-  console.log(status)
+  console.log(status);
   if (type === 'BOOKING') {
     switch (status) {
       case 'PENDING':
         return (
           <Tag className={className} color="warning">
-            Pending
+            PENDING
           </Tag>
         );
-        case 'EXPIRED':
+      case 'CONFIRMED':
+        return (
+          <Tag className={className} color="cyan">
+            CONFIRMED
+          </Tag>
+        );
+      case 'CHECK_IN':
+        return (
+          <Tag className={className} color="success">
+            CHECK-IN
+          </Tag>
+        );
+      case 'CHECK_OUT':
+        return (
+          <Tag className={className} color="volcano">
+            CHECK-OUT
+          </Tag>
+        );
+        case 'CANCELLED':
           return (
-            <Tag className={className} color="error">
-              Expired
+            <Tag className={className} color="orange">
+              CANCELLED
             </Tag>
           );
+      case 'EXPIRED':
+        return (
+          <Tag className={className} color="error">
+            Expired
+          </Tag>
+        );
 
       default:
         return <Tag className={className}></Tag>;

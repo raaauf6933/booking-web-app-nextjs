@@ -1,14 +1,33 @@
 'use client';
 import { Button, Card, Input } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { signIn } from 'next-auth/react';
+import { useAdminAuth } from '../../context/auth/context';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 
 function LoginPageComponent(params) {
-  const handleSubmit = async () => {
-    const result = await signIn();
 
-    console.log(result);
+  const navigate = useRouter().push
+  const [form,setForm] = useState({
+    username:"",
+    password:""
+  })
+
+  const { login, isAuthenticated } = useAdminAuth()
+  const handleSubmit = async () => {
+
+    login({
+      username:form.username,
+      password:form.password
+    })
   };
+
+  useEffect(()=> {
+    if(isAuthenticated){
+      navigate("/admin/bookings")
+    }
+  },[])
 
   return (
     <div className="flex flex-1 bg-light">
@@ -22,11 +41,16 @@ function LoginPageComponent(params) {
               size="large"
               placeholder="Username"
               prefix={<UserOutlined />}
+              onChange={(e)=> setForm(prevState => ({...prevState, username: e.target.value}))}
+              required
             />
             <Input
               size="large"
               placeholder="Password"
               prefix={<LockOutlined />}
+              onChange={(e)=> setForm(prevState => ({...prevState, password: e.target.value}))}
+              required
+              type='password'
             />
             <Button
               size="large"

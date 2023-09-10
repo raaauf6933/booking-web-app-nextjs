@@ -1,13 +1,23 @@
 'use client';
 import { FaWifi, FaSwimmingPool, FaWineGlassAlt } from 'react-icons/fa';
 import { IoRestaurant } from 'react-icons/io5';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import img1 from '@assets/image/main_img_1.jpeg';
 import img2 from '@assets/image/main_img_2.jpeg';
 
 import { Col, Row } from 'antd';
+import BookingContext from '../../context/booking/bookingContext';
 
 const MainBody = () => {
+  const { bookingDispatch } = useContext(BookingContext)
+
+  useEffect(()=> {
+    bookingDispatch({
+      type: 'RESET',
+    });
+  },[]);
+
+  
   return (
     <div>
       <Row gutter={[48, 24]} className="pb-16">

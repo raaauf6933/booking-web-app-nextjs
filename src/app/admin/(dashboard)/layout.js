@@ -1,12 +1,10 @@
-import AuthProvider from './../context/AuthProvider';
-import DashboardLayout from './../components/DashboardLayout';
+import dynamic from 'next/dynamic'
+const DashboardLayout = dynamic(() => import('./../components/DashboardLayout'), { ssr: false })
 
 export default async function RootLayout({ children }) {
   return (
     <main className="flex min-h-screen flex-col">
-      <AuthProvider>
-        <DashboardLayout>{children}</DashboardLayout>
-      </AuthProvider>
+      <DashboardLayout>{children}</DashboardLayout>
     </main>
   );
 }

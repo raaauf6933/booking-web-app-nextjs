@@ -89,22 +89,22 @@ const BookingSummary = () => {
               </tr>
             </thead>
             <tbody>
-              {bookingState.room_details.map((e) => (
+              {handleGetRooms().map((e) => (
                 <>
                   <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <th
                       scope="row"
                       class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      {e.roomtype_name}
+                      {e.room_name}
                     </th>
-                    <td class="px-6 py-4">1</td>
+                    <td class="px-6 py-4">{e.qty}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       {' '}
                       {new Intl.NumberFormat('en-PH', {
                         style: 'currency',
                         currency: 'PHP',
-                      }).format(e.room_amount)}
+                      }).format(e.amount)}
                     </td>
                   </tr>
                 </>

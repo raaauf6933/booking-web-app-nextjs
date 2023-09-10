@@ -2,11 +2,11 @@ import { Card, Timeline } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 
 const History = ({ booking }) => {
-
-  const eventType = (event) => {
+  const eventType = (event, index) => {
     switch (event.type) {
       case 'BOOKING_CREATED':
         return {
+          key: index,
           children: (
             <div className="flex justify-between">
               <span>Booking Created</span>{' '}
@@ -31,8 +31,20 @@ const History = ({ booking }) => {
           ),
           color: 'red',
         };
-      // case "CANCELLED":
-      //   return <TimelineCancelled event={event} date={event.created} />;
+      case "CANCELLED":
+        return  {
+          dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
+          children: (
+            <div className="flex justify-between">
+              <span>Booking Canceled by <b>{event?.user}</b></span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+          color: 'red',
+        };
       // case "GUEST_IMAGE_UPLOAD":
       //   return (
       //     <TimelineImage
@@ -42,10 +54,39 @@ const History = ({ booking }) => {
       //       showImage={showReceipt}
       //     />
       //   );
-      // case "UPDATE_STATUS":
-      //   return <TimelineEventsMessage event={event} date={event.created} />;
-      // case "PAYMENT_CAPTURED":
-      //   return <TimelinePayment event={event} date={event.created} />;
+      case 'UPDATE_STATUS':
+        return {
+          children: (
+            <div className="flex justify-between">
+              <span>{event?.message}</span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+        };
+      case 'PAYMENT_CAPTURED':
+        return {
+          children: (
+            <div className="flex justify-between">
+              <span>
+                {event?.message} - Amount:{' '}
+                <b>
+                  {' '}
+                  {new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(event?.amount)}
+                </b>
+              </span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+        };
       // case "ADD_AMENITY":
       //   return <TimelineAdditionals event={event} date={event.created} />;
       // case "ADD_CHARGES":
@@ -62,14 +103,12 @@ const History = ({ booking }) => {
   return (
     <Card title="Booking History">
       <Timeline
-        items={
-          booking?.events
-            .slice()
-            .reverse()
-            .map((event) => {
-              return eventType(event);
-            })
-        }
+        items={booking?.events
+          .slice()
+          .reverse()
+          .map((event, index) => {
+            return eventType(event, index);
+          })}
       />
     </Card>
   );

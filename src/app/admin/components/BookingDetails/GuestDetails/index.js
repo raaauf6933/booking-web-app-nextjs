@@ -1,15 +1,25 @@
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
 
-const GuestDetails = ({ booking }) => {
-
+const GuestDetails = ({ booking, showConfirmCancel }) => {
   const guest = booking?.guest;
 
   return (
-    <Card title="Guest Details">
+    <Card
+      title="Guest Details"
+      extra={
+        booking?.status === 'PENDING' ? (
+          <Button onClick={showConfirmCancel} danger>
+            Cancel Booking
+          </Button>
+        ) : null
+      }
+    >
       <div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Name:</span>
-          <span>{guest?.first_name} {guest?.last_name}</span>
+          <span>
+            {guest?.first_name} {guest?.last_name}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold mb-2">Phone Number:</span>

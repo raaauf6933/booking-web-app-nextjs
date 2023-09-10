@@ -1,55 +1,152 @@
 'use client';
-import { Button, Col, Image, Row } from 'antd';
+import React from "react"
+import { Button, Col, Image, Row, Tooltip } from 'antd';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Barlow_Condensed } from 'next/font/google';
 import BookingContext from '../../context/booking/bookingContext';
-import { useContext } from 'react';
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { useContext, useState } from 'react';
 const inter = Barlow_Condensed({ weight: '100', subsets: ['latin'] });
 
 const MainRoomCard = (props) => {
   const { image, size, type, data } = props;
   const { bookingState, bookingDispatch } = useContext(BookingContext);
+  const { room_details: roomContext } = bookingState;
+
+  const initialQty = () => {
+    const roomContextData =
+      roomContext &&
+      roomContext.filter(({ roomtype_id }) => roomtype_id === data._id);
+    return roomContextData.length ? roomContextData.length : 0;
+  };
+
+  const [qty, setQty] = useState(initialQty());
+  const [disableAdd, setDisableAdd] = useState(false);
+  const [disableRemove, setDisableRemove] = useState(false);
 
   const handleAddRoom = () => {
-    bookingDispatch({
-      type: "ADD_ROOM",
-      payload: {
-        room_id: data.rooms.find(()=> true)._id,
-        roomtype_id: data._id,
-        room_amount: data.room_rate,
-        roomtype_name: data.name,
-        room_num: data.rooms.find(()=> true).room_number,
-        no_person: data.details.no_person,
-      },
-    });
+    setQty((prevState) => (disableAdd ? prevState : prevState + 1));
+    if (!disableAdd) {
+      bookingDispatch({
+        type: "ADD_ROOM",
+        payload: {
+          room_id: data.rooms[qty]._id,
+          roomtype_id: data._id,
+          room_amount: data.room_rate,
+          roomtype_name: data.name,
+          room_num: data.rooms[qty].room_number,
+          no_person: data.details.no_person,
+        },
+      });
+    }
+
+    // bookingDispatch({
+    //   type: 'ADD_ROOM',
+    //   payload: {
+    //     room_id: data.rooms.find(() => true)._id,
+    //     roomtype_id: data._id,
+    //     room_amount: data.room_rate,
+    //     roomtype_name: data.name,
+    //     room_num: data.rooms.find(() => true).room_number,
+    //     no_person: data.details.no_person,
+    //   },
+    // });
+  };
+
+  const handleRemoveRoom = () => {
+    setQty((prevState) => (disableRemove ? prevState : prevState - 1));
+    if (!disableRemove) {
+      bookingDispatch({
+        type: "REMOVE_ROOM",
+        payload: {
+          room_id: data?.rooms[qty - 1]._id,
+        },
+      });
+    }
   }
+  
+  const disableButtons = () => {
+    setDisableAdd(false);
+    setDisableRemove(false);
+
+    if (data?.rooms.length !== 1) {
+      if (qty < data?.rooms.length && qty !== 0) {
+        setDisableAdd(false);
+        setDisableRemove(false);
+      } else if (qty === 0) {
+        setDisableRemove(true);
+      } else if (qty === data?.rooms.length) {
+        setDisableAdd(true);
+      }
+    } else {
+      setDisableRemove(true);
+      setDisableAdd(true);
+      if (qty === 1) {
+        setDisableAdd(true);
+        setDisableRemove(false);
+      } else {
+        setDisableRemove(true);
+        setDisableAdd(false);
+      }
+    }
+
+    if (data?.rooms.length === 0) {
+      setDisableRemove(true);
+      setDisableAdd(true);
+    }
+  };
+
+  React.useEffect(() => {
+    setQty(initialQty());
+    disableButtons();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qty, data, roomContext]);
+
+  React.useEffect(() => {
+    disableButtons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qty, roomContext]);
+
 
   const ActionComponent = () => {
     if (type !== 'SELECT_ROOM') {
       return <></>;
-    } else if(data.rooms.length === 0){
-        return <><span className='text-2xl font-bold '>No Available Room</span></>
-    }else {
+    } else if (data.rooms.length === 0) {
       return (
-        <Button className="text-base w-auto pb-7" onClick={handleAddRoom} disabled={bookingState.room_details.some((e)=> e.room_id === data.rooms.find(()=> true)._id)}>
-          <div className="flex justify-center items-center">
-            <span>Book This Room</span>
-            <MdKeyboardArrowRight className="text-xl" />
-          </div>{' '}
-        </Button>
+        <>
+          <span className="text-2xl font-bold ">No Available Room</span>
+        </>
+      );
+    } else {
+      return (
+        <div className="flex flex-row justify-between">
+          <div>
+            <span className="text-2xl font-bold ">
+              Available Rooms: {data?.rooms.length}
+            </span>
+          </div>
+          <div>
+            <Tooltip title="search">
+              <Button disabled={disableRemove} onClick={handleRemoveRoom} shape="circle" icon={<MinusOutlined />} />
+            </Tooltip>
+            <span className="text-2xl px-5">{qty}</span>
+            <Tooltip title="search">
+              <Button disabled={ disableAdd} onClick={handleAddRoom} shape="circle" icon={<PlusOutlined />} />
+            </Tooltip>
+          </div>
+        </div>
       );
     }
   };
 
   return (
     <>
-      <Row gutter={[0,26]}>
+      <Row gutter={[0, 26]}>
         <Col xs={24} sm={24} md={12} lg={12}>
           <div className="pb-5">
             {' '}
-            <Image.PreviewGroup
-            items={image}
-            >
+            <Image.PreviewGroup items={image}>
               <Image
                 style={{
                   width: '30em',

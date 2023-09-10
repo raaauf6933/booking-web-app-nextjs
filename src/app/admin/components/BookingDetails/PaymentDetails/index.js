@@ -38,11 +38,17 @@ const PaymentDetails = ({ booking }) => {
         <Divider />
         <div className="flex justify-between">
           <span className="font-bold">Captured Amount</span>
-          <span>PHP 0.00</span>
+          <span>{new Intl.NumberFormat('en-PH', {
+              style: 'currency',
+              currency: 'PHP',
+            }).format(booking?.payment_amount)}</span>
         </div>
         <div className="flex justify-between">
           <span>Oustanding Balance</span>
-          <span>PHP 0.00</span>
+          <span>{new Intl.NumberFormat('en-PH', {
+              style: 'currency',
+              currency: 'PHP',
+            }).format(billing?.total_amount - booking?.payment_amount)}</span>
         </div>
       </div>
     </Card>

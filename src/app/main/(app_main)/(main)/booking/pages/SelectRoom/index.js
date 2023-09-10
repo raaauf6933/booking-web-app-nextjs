@@ -54,7 +54,7 @@ const SelectRoom = () => {
         <Col sm={24} md={6} lg={6}>
           <BookingSummary />
           <div className="mt-4">
-            <Button className="w-full bg-warning" size="large" onClick={()=> navigate.push("/main/booking/review")}>
+            <Button disabled={bookingState?.room_details?.length < 1} className="w-full bg-warning" size="large" onClick={()=> navigate.push("/main/booking/review")}>
               <span className="text-white text-lg">Proceed</span>
             </Button>
           </div>

@@ -11,7 +11,7 @@ import {
   // import { useAuth } from "context/auth/context";
   axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
   
-  const useFetch = (axiosParams, options) => {
+  const useFetch = (axiosParams, options, token) => {
     // const user = useAuth();
     // const { dispatch } = useContext(AppStateContext);
     // const { tokenRefresh } = useContext(AuthContext);
@@ -21,6 +21,8 @@ import {
   
     const params = {
       ...axiosParams,
+       Accept: "application/json",
+      "x-auth-token": token
     };
   
     const fetchData = async (refetchParams) => {
@@ -31,7 +33,7 @@ import {
         // await tokenRefresh();
   
         const result = await axios.request({
-          ...(refetchParams ? refetchParams : params),
+          ...(refetchParams ? {...refetchParams, headers:{ "x-auth-token": token }} : params),
           url: params.url,
         });
   

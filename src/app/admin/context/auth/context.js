@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AUTH_ADMIN, REQUEST_RESET_PASSWORD, RESET_PASSWORD } from './api';
 import jwtDecode from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { useNotification } from '../notification/context';
+import { useNotification } from '../../../main/context/notification/context';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -23,14 +23,14 @@ export function AuthContextProvider({ children }) {
       let result = await axios.request({
         method: 'POST',
         data: formData,
-        url: '/auth/client_login',
+        url: '/auth/admin',
       });
 
       setToken(result.data.token);
 
-      // if (isAuthenticated()) {
-      //   navigate('/main/my_account/bookings');
-      // }
+      if (isAuthenticated()) {
+        navigate('/admin/bookings');
+      }
       
     } catch (e) {
       if (e?.response?.data?.message) {
@@ -50,7 +50,7 @@ export function AuthContextProvider({ children }) {
   const logout = () => {
     removeTokens();
     router.refresh();
-    navigate("/main")
+    navigate("/admin/login")
   };
 
   const requestResetPassword = async (formData) => {
@@ -95,7 +95,7 @@ export function AuthContextProvider({ children }) {
   );
 }
 
-export const useClientAuth = () => {
+export const useAdminAuth = () => {
   const { login, logout, getUser, requestResetPassword, resetPassword , loading} =
     useContext(AuthContext);
 
