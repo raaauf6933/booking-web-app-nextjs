@@ -343,7 +343,7 @@ const Review = () => {
           </div>
         </div>
         <div className="mt-10 mx-auto w-fit">
-          <Button size="large" className="mr-3">
+          <Button size="large" onClick={()=> navigate("/main/booking/select_room")} className="mr-3">
             <span>Back</span>
           </Button>
           <Button size="large" disabled={!paymentType || createBookingOpts.loading} onClick={handleSave}>

@@ -1,32 +1,52 @@
-"use client";
-import { useRouter } from 'next/navigation';
-import MainContainer from '../../components/MainContainer';
-import { useNotification } from '../../context/notification/context';
-import usePost from '../../../hooks/usePost';
-import useFetch from '../../../hooks/useFetch';
+'use client';
+import { useParams, useRouter } from 'next/navigation';
+import useFetch from '../../../../hooks/useFetch';
 import { Button, Card, Col, Divider, Input, Row } from 'antd';
+import Header from '../../../components/Header';
 import { Controller, useForm } from 'react-hook-form';
+import usePost from '../../../../hooks/usePost';
+import { useNotification } from '../../../../main/context/notification/context';
 import { useEffect } from 'react';
-import { useClientAuth } from '../../context/auth/context';
 
-const MyAccount = () => {
-  const { user } = useClientAuth();
+const CustomersForm = () => {
+  const params = useParams();
   const navigate = useRouter();
   const { notif } = useNotification();
 
+  const isEdit = params?.id;
 
   const { response } = useFetch(
     {
       method: 'GET',
       url: '/customers/customer',
       params: {
-        id: user?._id
+        id: params?.id,
       },
     },
     {
-      skip: !user?._id
+      skip: !params?.id,
     },
   );
+
+  const [createCustomer, createCustomerOpts] = usePost({
+    onComplete: () => {
+      notif['success']({
+        message: 'Success Create',
+      });
+      navigate.push('/admin/customers');
+    },
+    onError: (e) => {
+      if (e?.response?.data?.message) {
+        notif['error']({
+          message: e.response.data.message,
+        });
+      } else {
+        notif['error']({
+          message: 'Internal Server Error',
+        });
+      }
+    },
+  });
 
 
   const [editCustomer, editCustomerOpts] = usePost({
@@ -34,7 +54,7 @@ const MyAccount = () => {
       notif['success']({
         message: 'Success Edit',
       });
-      navigate.push('/main/my_account/bookings');
+      navigate.push('/admin/customers');
     },
     onError: (e) => {
       if (e?.response?.data?.message) {
@@ -56,20 +76,26 @@ const MyAccount = () => {
   });
 
   const handleSubmitCustomer = (data) => {
- 
+    if (!isEdit) {
+      createCustomer({
+        method: 'POST',
+        url: '/customers/register',
+        data,
+      });
+    }else{
       editCustomer({
         method: 'POST',
         url: '/customers/edit_customer',
         data:{
           ...data,
-          id: user?._id
+          id: params?.id
         }
       });
-    
+    }
   };
 
   useEffect(() => {
-    if (response?.data && user?._id) {
+    if (response?.data && params?.id) {
       setValue('first_name', response?.data?.first_name);
       setValue('last_name', response?.data?.last_name);
       setValue('email', response?.data?.email);
@@ -79,20 +105,17 @@ const MyAccount = () => {
     }
   }, [response]);
 
-
   return (
-    <>
-      <MainContainer>
-      <div>
+    <div>
       <form onSubmit={handleSubmit(handleSubmitCustomer)}>
         <Card
-          title="My Account"
+          title={isEdit ? `Edit Customer` : "Create Customer"}
           actions={[
             <div className="flex justify-end px-6">
               <Button
                 htmlType="submit"
                 size="large"
-                loading={editCustomerOpts.loading}
+                loading={createCustomerOpts.loading || editCustomerOpts.loading}
               >
                 Save
               </Button>
@@ -156,7 +179,7 @@ const MyAccount = () => {
                     {...field}
                     placeholder="Email"
                     size="large"
-                    disabled={true}
+                    disabled={isEdit}
                     required
                   />
                 )}
@@ -189,9 +212,7 @@ const MyAccount = () => {
         </Card>
       </form>
     </div>
-      </MainContainer>
-    </>
   );
 };
 
-export default MyAccount;
+export default CustomersForm;

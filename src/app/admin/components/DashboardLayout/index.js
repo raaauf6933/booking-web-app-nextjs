@@ -1,7 +1,7 @@
 'use client';
 import React, { Suspense } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Layout as AntDLayout, Button, Dropdown, Menu, Spin } from 'antd';
 import { AdminRoutes } from './../../(dashboard)/constant';
 import ProtectedPage from '../ProtectedPage';
@@ -15,6 +15,8 @@ function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = React.useState(false);
   const { user, logout } = useAdminAuth()
   const navigate = useRouter();
+  const route = usePathname();
+
 
   return (
     <ProtectedPage>
@@ -24,10 +26,10 @@ function DashboardLayout({ children }) {
           <Menu
             theme="dark"
             mode="inline"
-            // defaultSelectedKeys={['1']}
+           selectedKeys={route}
             items={AdminRoutes.map((e, index) => ({
               ...e,
-              key: String(index + 1),
+              key: e.url,
               onClick: () => navigate.push(e.url),
             }))}
           />

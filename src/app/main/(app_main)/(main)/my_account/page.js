@@ -1,4 +1,5 @@
-const { default: MyAccount } = require('../../../pages/MyAccount');
+import MyAccount from "../../../pages/MyAccount";
+
 
 const MyAccountPage = () => {
   return (

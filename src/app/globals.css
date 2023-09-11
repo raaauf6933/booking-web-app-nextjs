@@ -27,6 +27,13 @@ body {
 
 svg { vertical-align: baseline; }
 
+.ant-statistic-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
 .main-image {
   width: auto;
   background-position: center center;

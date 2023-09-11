@@ -43,53 +43,6 @@ const columns = [
   },
 ];
 
-const dataSource = [
-  {
-    key: '1',
-    booking_reference: '3AES1',
-    guest: 'Stephen Curry',
-    booking_date: '10/23/2022',
-    check_in: '10/24/2022',
-    check_out: '10/25/2022',
-    status: 'PENDING',
-  },
-  {
-    key: '1',
-    booking_reference: '3AES1',
-    guest: 'Stephen Curry',
-    booking_date: '10/23/2022',
-    check_in: '10/24/2022',
-    check_out: '10/25/2022',
-    status: 'PENDING',
-  },
-  {
-    key: '1',
-    booking_reference: '3AES1',
-    guest: 'Stephen Curry',
-    booking_date: '10/23/2022',
-    check_in: '10/24/2022',
-    check_out: '10/25/2022',
-    status: 'PENDING',
-  },
-  {
-    key: '1',
-    booking_reference: '3AES1',
-    guest: 'Stephen Curry',
-    booking_date: '10/23/2022',
-    check_in: '10/24/2022',
-    check_out: '10/25/2022',
-    status: 'PENDING',
-  },
-  {
-    key: '1',
-    booking_reference: '3AES1',
-    guest: 'Stephen Curry',
-    booking_date: '10/23/2022',
-    check_in: '10/24/2022',
-    check_out: '10/25/2022',
-    status: 'PENDING',
-  },
-];
 
 const Bookings = () => {
   const navigate = useRouter();

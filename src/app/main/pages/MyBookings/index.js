@@ -4,6 +4,7 @@ import MainContainer from '../../components/MainContainer';
 import useFetch from '../../../hooks/useFetch';
 import { useClientAuth } from '../../context/auth/context';
 import StatusTag from '../../../admin/components/StatusTag';
+import { useRouter } from 'next/navigation';
 
 const columns = [
   {
@@ -45,7 +46,7 @@ const columns = [
 
 const MyBookings = () => {
   const { user } = useClientAuth();
-
+  const navigate = useRouter();
   const computeNights = (result) => {
     const date1 = new Date(result.check_in);
     const date2 = new Date(result.check_out);
@@ -65,6 +66,7 @@ const MyBookings = () => {
   const bookings = response?.data
     ? response?.data?.map((booking) => ({
         ...booking,
+        id: booking?._id,
         total_amount: new Intl.NumberFormat('en-PH', {
           style: 'currency',
           currency: 'PHP',
@@ -81,7 +83,16 @@ const MyBookings = () => {
             <span className="text-4xl"> My Bookings</span>
           </div>
 
-          <Table columns={columns} dataSource={bookings} />
+          <Table columns={columns} dataSource={bookings} 
+           onRow={(record, rowIndex) => {
+            return {
+              onClick: (event) => {
+                navigate.push(`/main/my_account/bookings/${record.id}`);
+              }, // click row
+            };
+          }}
+          rowClassName="cursor-pointer"
+          />
         </div>
       </MainContainer>
     </>

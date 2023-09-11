@@ -121,7 +121,9 @@ const BookingDetails = () => {
                   <PaymentDetails booking={booking} />
                 </Col>
                 <Col md={24} lg={24}>
+                 <Card title="Booking History">
                   <History booking={booking} />
+                  </Card>
                 </Col>
               </Row>
             </Col>
@@ -190,7 +192,7 @@ const BookingDetails = () => {
           okLabel={okLabel()}
           onCancel={()=> navigate("/admin/bookings")}
           disabled={updateBookingOpts.loading}
-          hideOk={["CHECK_OUT","CANCELLED"].includes(booking?.status)}
+          hideOk={["CHECK_OUT","CANCELLED","EXPIRED"].includes(booking?.status)}
           onOk={() => setOpenModal(true)}
         />
       </div>

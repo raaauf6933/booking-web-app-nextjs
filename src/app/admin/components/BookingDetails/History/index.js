@@ -1,5 +1,5 @@
-import { Card, Timeline } from 'antd';
-import { ClockCircleOutlined } from '@ant-design/icons';
+import { Timeline } from 'antd';
+import { ClockCircleOutlined, FileImageOutlined } from '@ant-design/icons';
 
 const History = ({ booking }) => {
   const eventType = (event, index) => {
@@ -45,15 +45,20 @@ const History = ({ booking }) => {
           ),
           color: 'red',
         };
-      // case "GUEST_IMAGE_UPLOAD":
-      //   return (
-      //     <TimelineImage
-      //       title="Booking Created"
-      //       date={event.created}
-      //       image={event?.images}
-      //       showImage={showReceipt}
-      //     />
-      //   );
+      case "GUEST_IMAGE_UPLOAD":
+        return {
+          dot: <FileImageOutlined style={{ fontSize: '16px' }} />,
+          children: (
+            <div className="flex justify-between">
+              <span>Guest uploaded an <a  className='text-info' href={event?.images?.src} target="_blank">Image</a> (click the image to see)</span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+          color: 'blue',
+        }
       case 'UPDATE_STATUS':
         return {
           children: (
@@ -101,7 +106,6 @@ const History = ({ booking }) => {
   };
 
   return (
-    <Card title="Booking History">
       <Timeline
         items={booking?.events
           .slice()
@@ -110,7 +114,6 @@ const History = ({ booking }) => {
             return eventType(event, index);
           })}
       />
-    </Card>
   );
 };
 
