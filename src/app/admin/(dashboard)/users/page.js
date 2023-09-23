@@ -1,4 +1,3 @@
-
 import Users from '../../containers/Users';
 
 export const metadata = {

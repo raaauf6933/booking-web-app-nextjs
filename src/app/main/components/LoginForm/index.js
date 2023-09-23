@@ -10,8 +10,8 @@ import BookingContext from '../../context/booking/bookingContext';
 const LoginForm = () => {
   const navigate = useRouter();
   const { control, handleSubmit } = useForm();
-  const { login, loading, isAuthenticated, } = useClientAuth({});
-  const {  bookingState } = useContext(BookingContext)
+  const { login, loading, isAuthenticated } = useClientAuth({});
+  const { bookingState } = useContext(BookingContext);
 
   const handleLogin = (data) => {
     login({
@@ -20,19 +20,17 @@ const LoginForm = () => {
     });
   };
 
-
-  useEffect(()=> {
-    if(isAuthenticated && bookingState?.room_details?.length >= 1){
-      navigate.push("/main/booking/review")
-      return ()=> null;
-
+  useEffect(() => {
+    if (isAuthenticated && bookingState?.room_details?.length >= 1) {
+      navigate.push('/main/booking/review');
+      return () => null;
     }
-    if(isAuthenticated){
-      navigate.push("/main/my_account/bookings")
+    if (isAuthenticated) {
+      navigate.push('/main/my_account/bookings');
 
       return;
     }
-  },[isAuthenticated])
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -65,7 +63,7 @@ const LoginForm = () => {
                 {...field}
                 className="p-3 text-md"
                 placeholder="Password..."
-                type='password'
+                type="password"
                 required
               />
             )}

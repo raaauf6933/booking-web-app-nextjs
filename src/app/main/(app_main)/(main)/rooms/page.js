@@ -13,19 +13,39 @@ const SelectRoomPage = () => {
       <MainHeader title="Our Room" />
       <MainContainer>
         <div className="pb-8">
-          <MainRoomCard image={["https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474564/sut3gag8cjhwqajjxpts.jpg"]} />
+          <MainRoomCard
+            image={[
+              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474564/sut3gag8cjhwqajjxpts.jpg',
+            ]}
+          />
         </div>
         <div className="pb-8">
-          <MainRoomCard image={["https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/pxroawxg7ktfu3ccfbpq.jpg"]} />
+          <MainRoomCard
+            image={[
+              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/pxroawxg7ktfu3ccfbpq.jpg',
+            ]}
+          />
         </div>
         <div className="pb-8">
-          <MainRoomCard image={["https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/qmptobbacpb8quoc9ury.jpg"]} />
+          <MainRoomCard
+            image={[
+              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/qmptobbacpb8quoc9ury.jpg',
+            ]}
+          />
         </div>
         <div className="pb-8">
-          <MainRoomCard image={["https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/e3qiwrmbmtk8flbztltg.jpg"]} />
+          <MainRoomCard
+            image={[
+              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/e3qiwrmbmtk8flbztltg.jpg',
+            ]}
+          />
         </div>
         <div className="pb-8">
-          <MainRoomCard image={["https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/sxbfhdstmtok6cmswajc.jpg"]} />
+          <MainRoomCard
+            image={[
+              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/sxbfhdstmtok6cmswajc.jpg',
+            ]}
+          />
         </div>
       </MainContainer>
     </>

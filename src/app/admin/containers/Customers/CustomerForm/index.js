@@ -48,7 +48,6 @@ const CustomersForm = () => {
     },
   });
 
-
   const [editCustomer, editCustomerOpts] = usePost({
     onComplete: () => {
       notif['success']({
@@ -69,8 +68,6 @@ const CustomersForm = () => {
     },
   });
 
-
-  
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
@@ -82,14 +79,14 @@ const CustomersForm = () => {
         url: '/customers/register',
         data,
       });
-    }else{
+    } else {
       editCustomer({
         method: 'POST',
         url: '/customers/edit_customer',
-        data:{
+        data: {
           ...data,
-          id: params?.id
-        }
+          id: params?.id,
+        },
       });
     }
   };
@@ -109,7 +106,7 @@ const CustomersForm = () => {
     <div>
       <form onSubmit={handleSubmit(handleSubmitCustomer)}>
         <Card
-          title={isEdit ? `Edit Customer` : "Create Customer"}
+          title={isEdit ? `Edit Customer` : 'Create Customer'}
           actions={[
             <div className="flex justify-end px-6">
               <Button
@@ -128,7 +125,12 @@ const CustomersForm = () => {
                 name="first_name"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} placeholder="First Name" size="large" required />
+                  <Input
+                    {...field}
+                    placeholder="First Name"
+                    size="large"
+                    required
+                  />
                 )}
               />
             </Col>
@@ -137,7 +139,12 @@ const CustomersForm = () => {
                 name="last_name"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} placeholder="Last Name" size="large" required />
+                  <Input
+                    {...field}
+                    placeholder="Last Name"
+                    size="large"
+                    required
+                  />
                 )}
               />
             </Col>
@@ -147,7 +154,12 @@ const CustomersForm = () => {
                 name="contact_number"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} placeholder="Contact No." size="large" required />
+                  <Input
+                    {...field}
+                    placeholder="Contact No."
+                    size="large"
+                    required
+                  />
                 )}
               />
             </Col>
@@ -156,7 +168,12 @@ const CustomersForm = () => {
                 name="address"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} placeholder="Street Address" size="large" required />
+                  <Input
+                    {...field}
+                    placeholder="Street Address"
+                    size="large"
+                    required
+                  />
                 )}
               />
             </Col>
@@ -165,7 +182,7 @@ const CustomersForm = () => {
                 name="city"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} placeholder="City" size="large"  required/>
+                  <Input {...field} placeholder="City" size="large" required />
                 )}
               />
             </Col>
@@ -190,7 +207,12 @@ const CustomersForm = () => {
                 name="password"
                 control={control}
                 render={({ field }) => (
-                  <Input.Password {...field} placeholder="Password" size="large" required />
+                  <Input.Password
+                    {...field}
+                    placeholder="Password"
+                    size="large"
+                    required
+                  />
                 )}
               />
             </Col>

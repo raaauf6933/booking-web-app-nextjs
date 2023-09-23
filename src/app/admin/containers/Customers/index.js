@@ -72,10 +72,14 @@ const Customers = () => {
           </>
         }
       />
-      <Table columns={columns} dataSource={customers}  onRow={(e) => ({
-          onClick: () =>
-            navigate.push(`/admin/customers/${e.key}`),
-        })}  rowClassName="cursor-pointer" />
+      <Table
+        columns={columns}
+        dataSource={customers}
+        onRow={(e) => ({
+          onClick: () => navigate.push(`/admin/customers/${e.key}`),
+        })}
+        rowClassName="cursor-pointer"
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 'use client';
-import React from "react"
+import React from 'react';
 import { Button, Col, Image, Row, Tooltip } from 'antd';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Barlow_Condensed } from 'next/font/google';
@@ -28,7 +28,7 @@ const MainRoomCard = (props) => {
     setQty((prevState) => (disableAdd ? prevState : prevState + 1));
     if (!disableAdd) {
       bookingDispatch({
-        type: "ADD_ROOM",
+        type: 'ADD_ROOM',
         payload: {
           room_id: data.rooms[qty]._id,
           roomtype_id: data._id,
@@ -57,14 +57,14 @@ const MainRoomCard = (props) => {
     setQty((prevState) => (disableRemove ? prevState : prevState - 1));
     if (!disableRemove) {
       bookingDispatch({
-        type: "REMOVE_ROOM",
+        type: 'REMOVE_ROOM',
         payload: {
           room_id: data?.rooms[qty - 1]._id,
         },
       });
     }
-  }
-  
+  };
+
   const disableButtons = () => {
     setDisableAdd(false);
     setDisableRemove(false);
@@ -108,7 +108,6 @@ const MainRoomCard = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qty, roomContext]);
 
-
   const ActionComponent = () => {
     if (type !== 'SELECT_ROOM') {
       return <></>;
@@ -128,11 +127,21 @@ const MainRoomCard = (props) => {
           </div>
           <div>
             <Tooltip title="search">
-              <Button disabled={disableRemove} onClick={handleRemoveRoom} shape="circle" icon={<MinusOutlined />} />
+              <Button
+                disabled={disableRemove}
+                onClick={handleRemoveRoom}
+                shape="circle"
+                icon={<MinusOutlined />}
+              />
             </Tooltip>
             <span className="text-2xl px-5">{qty}</span>
             <Tooltip title="search">
-              <Button disabled={ disableAdd} onClick={handleAddRoom} shape="circle" icon={<PlusOutlined />} />
+              <Button
+                disabled={disableAdd}
+                onClick={handleAddRoom}
+                shape="circle"
+                icon={<PlusOutlined />}
+              />
             </Tooltip>
           </div>
         </div>

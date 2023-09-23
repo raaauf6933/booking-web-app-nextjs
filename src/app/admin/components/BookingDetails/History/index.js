@@ -31,12 +31,14 @@ const History = ({ booking }) => {
           ),
           color: 'red',
         };
-      case "CANCELLED":
-        return  {
+      case 'CANCELLED':
+        return {
           dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
           children: (
             <div className="flex justify-between">
-              <span>Booking Canceled by <b>{event?.user}</b></span>{' '}
+              <span>
+                Booking Canceled by <b>{event?.user}</b>
+              </span>{' '}
               <span>
                 {new Date(event?.created).toDateString()}{' '}
                 {new Date(event?.created).toLocaleTimeString()}
@@ -45,12 +47,22 @@ const History = ({ booking }) => {
           ),
           color: 'red',
         };
-      case "GUEST_IMAGE_UPLOAD":
+      case 'GUEST_IMAGE_UPLOAD':
         return {
           dot: <FileImageOutlined style={{ fontSize: '16px' }} />,
           children: (
             <div className="flex justify-between">
-              <span>Guest uploaded an <a  className='text-info' href={event?.images?.src} target="_blank">Image</a> (click the image to see)</span>{' '}
+              <span>
+                Guest uploaded an{' '}
+                <a
+                  className="text-info"
+                  href={event?.images?.src}
+                  target="_blank"
+                >
+                  Image
+                </a>{' '}
+                (click the image to see)
+              </span>{' '}
               <span>
                 {new Date(event?.created).toDateString()}{' '}
                 {new Date(event?.created).toLocaleTimeString()}
@@ -58,7 +70,7 @@ const History = ({ booking }) => {
             </div>
           ),
           color: 'blue',
-        }
+        };
       case 'UPDATE_STATUS':
         return {
           children: (
@@ -106,14 +118,14 @@ const History = ({ booking }) => {
   };
 
   return (
-      <Timeline
-        items={booking?.events
-          .slice()
-          .reverse()
-          .map((event, index) => {
-            return eventType(event, index);
-          })}
-      />
+    <Timeline
+      items={booking?.events
+        .slice()
+        .reverse()
+        .map((event, index) => {
+          return eventType(event, index);
+        })}
+    />
   );
 };
 

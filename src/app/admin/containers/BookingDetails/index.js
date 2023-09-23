@@ -30,7 +30,7 @@ const BookingDetails = () => {
   const [openModal, setOpenModal] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const { notif } = useNotification();
-  const navigate = useRouter().push
+  const navigate = useRouter().push;
   const { response, refetch, error } = useFetch({
     method: 'POST',
     url: '/booking/booking',
@@ -39,8 +39,8 @@ const BookingDetails = () => {
     },
   });
 
-  if(error){
-    navigate("/404")
+  if (error) {
+    navigate('/404');
   }
 
   const [updateBooking, updateBookingOpts] = usePost({
@@ -83,20 +83,21 @@ const BookingDetails = () => {
       title: 'Do you Want to cancel this booking?',
       icon: <ExclamationCircleFilled />,
       // content: 'Some descriptions',
-      okButtonProps:{
-       className: 'bg-info'
+      okButtonProps: {
+        className: 'bg-info',
       },
-      okText: "Yes",
+      okText: 'Yes',
       onOk() {
-        updateBooking({
-          method: 'POST',
-          url: '/booking/update_booking_status',
-          data: {
-            id: booking._id,
-            status: "CANCELLED",
+        updateBooking(
+          {
+            method: 'POST',
+            url: '/booking/update_booking_status',
+            data: {
+              id: booking._id,
+              status: 'CANCELLED',
+            },
           },
-        },
-        getToken()
+          getToken(),
         );
       },
     });
@@ -121,8 +122,8 @@ const BookingDetails = () => {
                   <PaymentDetails booking={booking} />
                 </Col>
                 <Col md={24} lg={24}>
-                 <Card title="Booking History">
-                  <History booking={booking} />
+                  <Card title="Booking History">
+                    <History booking={booking} />
                   </Card>
                 </Col>
               </Row>
@@ -130,7 +131,10 @@ const BookingDetails = () => {
             <Col sm={24} md={8} lg={8}>
               <Row gutter={[12, 12]}>
                 <Col md={24} lg={24}>
-                  <GuestDetails booking={booking} showConfirmCancel={showConfirmCancel} />
+                  <GuestDetails
+                    booking={booking}
+                    showConfirmCancel={showConfirmCancel}
+                  />
                 </Col>
                 <Col md={24} lg={24}>
                   <Card title="Additionals"></Card>
@@ -170,7 +174,7 @@ const BookingDetails = () => {
               addonBefore="PHP"
               size="large"
               value={paymentAmount}
-              placeholder='Enter Payment Amount'
+              placeholder="Enter Payment Amount"
               onChangeCapture={(e) =>
                 setPaymentAmount((prevState) =>
                   isNaN(parseInt(e.currentTarget.value))
@@ -190,9 +194,11 @@ const BookingDetails = () => {
         </Modal>
         <ActionBar
           okLabel={okLabel()}
-          onCancel={()=> navigate("/admin/bookings")}
+          onCancel={() => navigate('/admin/bookings')}
           disabled={updateBookingOpts.loading}
-          hideOk={["CHECK_OUT","CANCELLED","EXPIRED"].includes(booking?.status)}
+          hideOk={['CHECK_OUT', 'CANCELLED', 'EXPIRED'].includes(
+            booking?.status,
+          )}
           onOk={() => setOpenModal(true)}
         />
       </div>

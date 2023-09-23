@@ -19,10 +19,13 @@ const PaymentDetails = ({ booking }) => {
         </div>
         <div className="flex justify-between">
           <span>Additional Amount</span>
-          <span>    {new Intl.NumberFormat('en-PH', {
+          <span>
+            {' '}
+            {new Intl.NumberFormat('en-PH', {
               style: 'currency',
               currency: 'PHP',
-            }).format(billing?.additional_total)}</span>
+            }).format(billing?.additional_total)}
+          </span>
         </div>
         <div className="flex justify-between">
           <span>Discount</span>
@@ -30,25 +33,32 @@ const PaymentDetails = ({ booking }) => {
         </div>
         <div className="flex justify-between">
           <span className="font-bold">Total Amount</span>
-          <span>  {new Intl.NumberFormat('en-PH', {
+          <span>
+            {' '}
+            {new Intl.NumberFormat('en-PH', {
               style: 'currency',
               currency: 'PHP',
-            }).format(billing?.total_amount)}</span>
+            }).format(billing?.total_amount)}
+          </span>
         </div>
         <Divider />
         <div className="flex justify-between">
           <span className="font-bold">Captured Amount</span>
-          <span>{new Intl.NumberFormat('en-PH', {
+          <span>
+            {new Intl.NumberFormat('en-PH', {
               style: 'currency',
               currency: 'PHP',
-            }).format(booking?.payment_amount)}</span>
+            }).format(booking?.payment_amount)}
+          </span>
         </div>
         <div className="flex justify-between">
           <span>Oustanding Balance</span>
-          <span>{new Intl.NumberFormat('en-PH', {
+          <span>
+            {new Intl.NumberFormat('en-PH', {
               style: 'currency',
               currency: 'PHP',
-            }).format(billing?.total_amount - booking?.payment_amount)}</span>
+            }).format(billing?.total_amount - booking?.payment_amount)}
+          </span>
         </div>
       </div>
     </Card>

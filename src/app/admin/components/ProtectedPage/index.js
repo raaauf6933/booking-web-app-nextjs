@@ -3,12 +3,9 @@ import { useEffect, useState } from 'react';
 import { useAdminAuth } from '../../context/auth/context';
 import { Spin } from 'antd';
 
-const ProtectedPage = ({
-  children,
-  requiredPermission,
-}) => {
+const ProtectedPage = ({ children, requiredPermission }) => {
   const router = useRouter();
-  const { user , loading} = useAdminAuth()
+  const { user, loading } = useAdminAuth();
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
@@ -25,16 +22,14 @@ const ProtectedPage = ({
   }, [user, loading]);
 
   const renderPage = () => {
-      // if (!user) return;
-      // if (loading) return;
+    // if (!user) return;
+    // if (loading) return;
     // if (requiredPermission && !permissions[user.role]?.[requiredPermission]) {
     //   router.push('/404');
     //   return;
     // }
     return children;
   };
-
-
 
   return (
     <>

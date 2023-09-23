@@ -33,7 +33,7 @@ const SelectRoom = () => {
           <Card>
             <div className="p-5 overflow-y-scroll max-h-screen">
               {response?.data?.map((room) => (
-                <div className='mb-5'>
+                <div className="mb-5">
                   <MainRoomCard
                     type="SELECT_ROOM"
                     data={room}
@@ -54,7 +54,12 @@ const SelectRoom = () => {
         <Col sm={24} md={6} lg={6}>
           <BookingSummary />
           <div className="mt-4">
-            <Button disabled={bookingState?.room_details?.length < 1} className="w-full bg-warning" size="large" onClick={()=> navigate.push("/main/booking/review")}>
+            <Button
+              disabled={bookingState?.room_details?.length < 1}
+              className="w-full bg-warning"
+              size="large"
+              onClick={() => navigate.push('/main/booking/review')}
+            >
               <span className="text-white text-lg">Proceed</span>
             </Button>
           </div>

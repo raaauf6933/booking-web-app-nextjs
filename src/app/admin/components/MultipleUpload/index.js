@@ -29,12 +29,12 @@ const MultipleUpload = (props) => {
     );
   };
   const handleChange = ({ fileList: newFileList, ...rest }) => {
-    if(newFileList.some((e)=> e.status === "uploading")){
-      getLoadingStatus(true)
-    }else{ 
-      getLoadingStatus(false)
+    if (newFileList.some((e) => e.status === 'uploading')) {
+      getLoadingStatus(true);
+    } else {
+      getLoadingStatus(false);
     }
-    
+
     //  newFileList.forEach((e)=> console.log({...e.response?.find(()=> true)}))
     onChange(
       newFileList.map((e) => (e.url ? e : { ...e.response?.find(() => true) })),
@@ -64,7 +64,6 @@ const MultipleUpload = (props) => {
           return isImage || Upload.LIST_IGNORE;
         }}
         onChange={handleChange}
-      
       >
         {fileList.length >= 8 ? null : (
           <>

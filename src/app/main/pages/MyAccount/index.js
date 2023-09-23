@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useRouter } from 'next/navigation';
 import MainContainer from '../../components/MainContainer';
 import { useNotification } from '../../context/notification/context';
@@ -14,20 +14,18 @@ const MyAccount = () => {
   const navigate = useRouter();
   const { notif } = useNotification();
 
-
   const { response } = useFetch(
     {
       method: 'GET',
       url: '/customers/customer',
       params: {
-        id: user?._id
+        id: user?._id,
       },
     },
     {
-      skip: !user?._id
+      skip: !user?._id,
     },
   );
-
 
   const [editCustomer, editCustomerOpts] = usePost({
     onComplete: () => {
@@ -49,23 +47,19 @@ const MyAccount = () => {
     },
   });
 
-
-  
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
 
   const handleSubmitCustomer = (data) => {
- 
-      editCustomer({
-        method: 'POST',
-        url: '/customers/edit_customer',
-        data:{
-          ...data,
-          id: user?._id
-        }
-      });
-    
+    editCustomer({
+      method: 'POST',
+      url: '/customers/edit_customer',
+      data: {
+        ...data,
+        id: user?._id,
+      },
+    });
   };
 
   useEffect(() => {
@@ -79,116 +73,145 @@ const MyAccount = () => {
     }
   }, [response]);
 
-
   return (
     <>
       <MainContainer>
-      <div>
-      <form onSubmit={handleSubmit(handleSubmitCustomer)}>
-        <Card
-          title="My Account"
-          actions={[
-            <div className="flex justify-end px-6">
-              <Button
-                htmlType="submit"
-                size="large"
-                loading={editCustomerOpts.loading}
-              >
-                Save
-              </Button>
-            </div>,
-          ]}
-        >
-          <Row gutter={[24, 24]}>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Controller
-                name="first_name"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="First Name" size="large" required />
-                )}
-              />
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Controller
-                name="last_name"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="Last Name" size="large" required />
-                )}
-              />
-            </Col>
+        <div>
+          <form onSubmit={handleSubmit(handleSubmitCustomer)}>
+            <Card
+              title="My Account"
+              actions={[
+                <div className="flex justify-end px-6">
+                  <Button
+                    htmlType="submit"
+                    size="large"
+                    loading={editCustomerOpts.loading}
+                  >
+                    Save
+                  </Button>
+                </div>,
+              ]}
+            >
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <Controller
+                    name="first_name"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="First Name"
+                        size="large"
+                        required
+                      />
+                    )}
+                  />
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <Controller
+                    name="last_name"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Last Name"
+                        size="large"
+                        required
+                      />
+                    )}
+                  />
+                </Col>
 
-            <Col xs={24} sm={24} md={24} lg={24}>
-              <Controller
-                name="contact_number"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="Contact No." size="large" required />
-                )}
-              />
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Controller
-                name="address"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="Street Address" size="large" required />
-                )}
-              />
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Controller
-                name="city"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="City" size="large"  required/>
-                )}
-              />
-            </Col>
-            <Divider>Authentication</Divider>
-            <Col xs={24} sm={24} md={24} lg={24}>
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="Email"
-                    size="large"
-                    disabled={true}
-                    required
+                <Col xs={24} sm={24} md={24} lg={24}>
+                  <Controller
+                    name="contact_number"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Contact No."
+                        size="large"
+                        required
+                      />
+                    )}
                   />
-                )}
-              />
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={24}>
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <Input.Password {...field} placeholder="Password" size="large" required />
-                )}
-              />
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={24}>
-              <Controller
-                name="confirm_password"
-                control={control}
-                render={({ field }) => (
-                  <Input.Password
-                    {...field}
-                    placeholder="Confirm Password"
-                    size="large"
-                    required
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Street Address"
+                        size="large"
+                        required
+                      />
+                    )}
                   />
-                )}
-              />
-            </Col>
-          </Row>
-        </Card>
-      </form>
-    </div>
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="City"
+                        size="large"
+                        required
+                      />
+                    )}
+                  />
+                </Col>
+                <Divider>Authentication</Divider>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Email"
+                        size="large"
+                        disabled={true}
+                        required
+                      />
+                    )}
+                  />
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <Input.Password
+                        {...field}
+                        placeholder="Password"
+                        size="large"
+                        required
+                      />
+                    )}
+                  />
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                  <Controller
+                    name="confirm_password"
+                    control={control}
+                    render={({ field }) => (
+                      <Input.Password
+                        {...field}
+                        placeholder="Confirm Password"
+                        size="large"
+                        required
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          </form>
+        </div>
       </MainContainer>
     </>
   );

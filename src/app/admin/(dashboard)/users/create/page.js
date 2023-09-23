@@ -1,9 +1,7 @@
-import UserForm from "../../../containers/Users/UserForm";
+import UserForm from '../../../containers/Users/UserForm';
 
-  
-  const CreateUser = () => {
-    return <UserForm />;
-  };
-  
-  export default CreateUser;
-  
+const CreateUser = () => {
+  return <UserForm />;
+};
+
+export default CreateUser;

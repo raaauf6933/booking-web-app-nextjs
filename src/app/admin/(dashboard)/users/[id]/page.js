@@ -1,9 +1,7 @@
-import UserForm from "../../../containers/Users/UserForm";
+import UserForm from '../../../containers/Users/UserForm';
 
-  
-  const EditUser = () => {
-    return <UserForm />;
-  };
-  
-  export default EditUser;
-  
+const EditUser = () => {
+  return <UserForm />;
+};
+
+export default EditUser;

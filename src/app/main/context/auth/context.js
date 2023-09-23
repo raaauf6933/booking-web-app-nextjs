@@ -14,12 +14,12 @@ const AuthContext = React.createContext({});
 export function AuthContextProvider({ children }) {
   const navigate = useRouter().push;
   const router = useRouter();
-  const {notif} = useNotification();
-  const [loading,setLoading] = React.useState(false);
+  const { notif } = useNotification();
+  const [loading, setLoading] = React.useState(false);
 
   const login = async (formData) => {
     try {
-      setLoading(true)
+      setLoading(true);
       let result = await axios.request({
         method: 'POST',
         data: formData,
@@ -31,7 +31,6 @@ export function AuthContextProvider({ children }) {
       // if (isAuthenticated()) {
       //   navigate('/main/my_account/bookings');
       // }
-      
     } catch (e) {
       if (e?.response?.data?.message) {
         notif['error']({
@@ -42,15 +41,15 @@ export function AuthContextProvider({ children }) {
           message: 'Internal Server Error',
         });
       }
-    } finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
     removeTokens();
     router.refresh();
-    navigate("/main")
+    navigate('/main');
   };
 
   const requestResetPassword = async (formData) => {
@@ -88,7 +87,14 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, getUser, requestResetPassword, resetPassword , loading}}
+      value={{
+        login,
+        logout,
+        getUser,
+        requestResetPassword,
+        resetPassword,
+        loading,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -96,8 +102,14 @@ export function AuthContextProvider({ children }) {
 }
 
 export const useClientAuth = () => {
-  const { login, logout, getUser, requestResetPassword, resetPassword , loading} =
-    useContext(AuthContext);
+  const {
+    login,
+    logout,
+    getUser,
+    requestResetPassword,
+    resetPassword,
+    loading,
+  } = useContext(AuthContext);
 
   return {
     login,

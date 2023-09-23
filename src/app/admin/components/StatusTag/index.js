@@ -29,12 +29,12 @@ const StatusTag = (props) => {
             CHECK-OUT
           </Tag>
         );
-        case 'CANCELLED':
-          return (
-            <Tag className={className} color="orange">
-              CANCELLED
-            </Tag>
-          );
+      case 'CANCELLED':
+        return (
+          <Tag className={className} color="orange">
+            CANCELLED
+          </Tag>
+        );
       case 'EXPIRED':
         return (
           <Tag className={className} color="error">
@@ -53,12 +53,12 @@ const StatusTag = (props) => {
             ACTIVE
           </Tag>
         );
-        case 'ACT':
-          return (
-            <Tag className={className} color="success">
-              ACTIVE
-            </Tag>
-          );
+      case 'ACT':
+        return (
+          <Tag className={className} color="success">
+            ACTIVE
+          </Tag>
+        );
       case 'INACTIVE':
         return (
           <Tag className={className} color="error">

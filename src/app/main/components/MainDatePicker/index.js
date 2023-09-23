@@ -22,8 +22,7 @@ const MainDatePicker = () => {
     check_out: '' || bookingState.check_out,
   });
 
-  const { isAuthenticated } = useClientAuth()
-
+  const { isAuthenticated } = useClientAuth();
 
   const onChangeCheckIn = (date, dateString) => {
     setDates((prevState) => ({ ...prevState, check_in: dateString }));
@@ -41,7 +40,6 @@ const MainDatePicker = () => {
   };
 
   const handleSubmitDate = () => {
-
     if (!hasNull(dates)) {
       bookingDispatch({
         type: 'SET_DATES',

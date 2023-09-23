@@ -2,14 +2,19 @@
 import { Card, Col, Row } from 'antd';
 import { MdCategory } from 'react-icons/md';
 import { AiFillTags } from 'react-icons/ai';
+import { useRouter } from 'next/navigation';
 
 const Configuration = () => {
+  const navigate = useRouter().push;
   return (
     <>
       <div className="w-full">
         <Row gutter={[24, 24]}>
           <Col md={6} lg={6}>
-            <Card hoverable>
+            <Card
+              hoverable
+              onClick={() => navigate('/admin/configuration/amenities')}
+            >
               <div className="flex flex-row items-center justify-center">
                 <span className="text-4xl text-info mr-5">
                   <MdCategory />
@@ -23,7 +28,10 @@ const Configuration = () => {
             </Card>
           </Col>
           <Col md={6} lg={6}>
-            <Card hoverable>
+            <Card
+              hoverable
+              onClick={() => navigate('/admin/configuration/discounts')}
+            >
               <div className="flex flex-row items-center justify-center">
                 <span className="text-4xl text-info mr-5">
                   <AiFillTags />

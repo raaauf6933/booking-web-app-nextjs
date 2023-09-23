@@ -9,15 +9,14 @@ import { Col, Row } from 'antd';
 import BookingContext from '../../context/booking/bookingContext';
 
 const MainBody = () => {
-  const { bookingDispatch } = useContext(BookingContext)
+  const { bookingDispatch } = useContext(BookingContext);
 
-  useEffect(()=> {
+  useEffect(() => {
     bookingDispatch({
       type: 'RESET',
     });
-  },[]);
+  }, []);
 
-  
   return (
     <div>
       <Row gutter={[48, 24]} className="pb-16">

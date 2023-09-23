@@ -29,13 +29,13 @@ const usePost = (props) => {
       //   await sessionGuard();
       const result = await axios.request({
         ...params,
-        params:{
-            test:"test"
+        params: {
+          test: 'test',
         },
         headers: {
           'Content-Type': 'application/json',
           Accept: '*/*',
-          "x-auth-token": token
+          'x-auth-token': token,
         },
       });
       setResponse(result);

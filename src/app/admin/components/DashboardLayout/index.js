@@ -13,10 +13,9 @@ const { Header, Content, Footer, Sider } = AntDLayout;
 
 function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = React.useState(false);
-  const { user, logout } = useAdminAuth()
+  const { user, logout } = useAdminAuth();
   const navigate = useRouter();
   const route = usePathname();
-
 
   return (
     <ProtectedPage>
@@ -26,7 +25,7 @@ function DashboardLayout({ children }) {
           <Menu
             theme="dark"
             mode="inline"
-           selectedKeys={route}
+            selectedKeys={route}
             items={AdminRoutes.map((e, index) => ({
               ...e,
               key: e.url,
@@ -77,7 +76,7 @@ function DashboardLayout({ children }) {
                             <span className="text-danger">Sign out</span>
                           </button>
                         ),
-                        onClick:logout
+                        onClick: logout,
                       },
                     ],
                   }}
@@ -89,7 +88,7 @@ function DashboardLayout({ children }) {
                   >
                     <div className="flex items-center">
                       <span className="mr-2">
-                      {user?.first_name} {user?.last_name}
+                        {user?.first_name} {user?.last_name}
                       </span>{' '}
                       <CaretDownOutlined />
                     </div>

@@ -43,26 +43,25 @@ const columns = [
   },
 ];
 
-
 const Bookings = () => {
   const navigate = useRouter();
 
   const { response } = useFetch({
-    method: "POST",
+    method: 'POST',
     url: 'booking/bookings',
     data: {
-      status: "ALL"
-    }
-  })
+      status: 'ALL',
+    },
+  });
 
   const bookings = response?.data
-  ? response?.data?.map((booking) => ({
-      ...booking,
+    ? response?.data?.map((booking) => ({
+        ...booking,
         key: booking?._id,
         guest: `${booking?.guest?.first_name} ${booking?.guest?.last_name}`,
-        booking_date: new Date(booking?.createdAt).toDateString()
-    }))
-  : [];
+        booking_date: new Date(booking?.createdAt).toDateString(),
+      }))
+    : [];
 
   return (
     <div>
@@ -71,8 +70,7 @@ const Bookings = () => {
         dataSource={bookings}
         columns={columns}
         onRow={(e) => ({
-          onClick: () =>
-            navigate.push(`/admin/bookings/${e.key}`),
+          onClick: () => navigate.push(`/admin/bookings/${e.key}`),
         })}
         rowClassName="cursor-pointer"
       />

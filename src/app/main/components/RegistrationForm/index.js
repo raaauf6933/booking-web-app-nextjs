@@ -28,12 +28,9 @@ const RegistartionForm = () => {
       }
     },
   });
-  const { control, handleSubmit , formState} = useForm({
-    mode:"onChange"
+  const { control, handleSubmit, formState } = useForm({
+    mode: 'onChange',
   });
-
-
-  
 
   const handleSubmitCustomer = (data) => {
     createCustomer({
@@ -42,8 +39,6 @@ const RegistartionForm = () => {
       data,
     });
   };
-
-
 
   return (
     <>
@@ -56,7 +51,6 @@ const RegistartionForm = () => {
           <Controller
             name="first_name"
             control={control}
-           
             render={({ field }) => (
               <Input
                 {...field}
@@ -93,7 +87,7 @@ const RegistartionForm = () => {
                 className="p-3 text-md"
                 placeholder="Ex. my-email@hotmail.com"
                 required
-                type='email'
+                type="email"
               />
             )}
           />

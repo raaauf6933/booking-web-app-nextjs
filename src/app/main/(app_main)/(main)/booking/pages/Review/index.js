@@ -58,7 +58,6 @@ const Review = () => {
 
   const customer = response?.data;
 
-
   const [createBooking, createBookingOpts] = usePost({
     onComplete: (e) => {
       bookingDispatch({
@@ -67,7 +66,8 @@ const Review = () => {
       });
 
       notif['success']({
-        message: 'Booking Success, We have sent you an email. Thank you for booking with us',
+        message:
+          'Booking Success, We have sent you an email. Thank you for booking with us',
       });
 
       navigate.push('/main');
@@ -174,18 +174,16 @@ const Review = () => {
   };
 
   useEffect(() => {
-
-    if(!isAuthenticated){
+    if (!isAuthenticated) {
       notif['info']({
         message: 'Login first',
       });
 
-      navigate.push("/main/login");
+      navigate.push('/main/login');
 
       return;
     }
 
-    
     if (bookingState.room_details.length < 1) {
       navigate.push('/main');
     }
@@ -343,10 +341,18 @@ const Review = () => {
           </div>
         </div>
         <div className="mt-10 mx-auto w-fit">
-          <Button size="large" onClick={()=> navigate("/main/booking/select_room")} className="mr-3">
+          <Button
+            size="large"
+            onClick={() => navigate('/main/booking/select_room')}
+            className="mr-3"
+          >
             <span>Back</span>
           </Button>
-          <Button size="large" disabled={!paymentType || createBookingOpts.loading} onClick={handleSave}>
+          <Button
+            size="large"
+            disabled={!paymentType || createBookingOpts.loading}
+            onClick={handleSave}
+          >
             <span>Confirm</span>
           </Button>
         </div>

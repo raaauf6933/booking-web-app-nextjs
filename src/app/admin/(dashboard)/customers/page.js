@@ -1,4 +1,3 @@
-
 import Customers from '../../containers/Customers';
 
 export const metadata = {

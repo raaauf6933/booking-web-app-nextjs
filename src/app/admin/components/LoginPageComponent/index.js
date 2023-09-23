@@ -5,29 +5,26 @@ import { useAdminAuth } from '../../context/auth/context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-
 function LoginPageComponent(params) {
+  const navigate = useRouter().push;
+  const [form, setForm] = useState({
+    username: '',
+    password: '',
+  });
 
-  const navigate = useRouter().push
-  const [form,setForm] = useState({
-    username:"",
-    password:""
-  })
-
-  const { login, isAuthenticated } = useAdminAuth()
+  const { login, isAuthenticated } = useAdminAuth();
   const handleSubmit = async () => {
-
     login({
-      username:form.username,
-      password:form.password
-    })
+      username: form.username,
+      password: form.password,
+    });
   };
 
-  useEffect(()=> {
-    if(isAuthenticated){
-      navigate("/admin/bookings")
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/bookings');
     }
-  },[])
+  }, []);
 
   return (
     <div className="flex flex-1 bg-light">
@@ -41,16 +38,26 @@ function LoginPageComponent(params) {
               size="large"
               placeholder="Username"
               prefix={<UserOutlined />}
-              onChange={(e)=> setForm(prevState => ({...prevState, username: e.target.value}))}
+              onChange={(e) =>
+                setForm((prevState) => ({
+                  ...prevState,
+                  username: e.target.value,
+                }))
+              }
               required
             />
             <Input
               size="large"
               placeholder="Password"
               prefix={<LockOutlined />}
-              onChange={(e)=> setForm(prevState => ({...prevState, password: e.target.value}))}
+              onChange={(e) =>
+                setForm((prevState) => ({
+                  ...prevState,
+                  password: e.target.value,
+                }))
+              }
               required
-              type='password'
+              type="password"
             />
             <Button
               size="large"

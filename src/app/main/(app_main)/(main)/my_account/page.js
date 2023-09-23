@@ -1,5 +1,4 @@
-import MyAccount from "../../../pages/MyAccount";
-
+import MyAccount from '../../../pages/MyAccount';
 
 const MyAccountPage = () => {
   return (

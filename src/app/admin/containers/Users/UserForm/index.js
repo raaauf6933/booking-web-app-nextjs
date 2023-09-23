@@ -81,10 +81,10 @@ const UserForm = () => {
       editUser({
         method: 'POST',
         url: '/user/edit_user',
-        data:{
-            ...data,
-            id: params?.id
-        }
+        data: {
+          ...data,
+          id: params?.id,
+        },
       });
     }
   };

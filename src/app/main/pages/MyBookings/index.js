@@ -83,15 +83,17 @@ const MyBookings = () => {
             <span className="text-4xl"> My Bookings</span>
           </div>
 
-          <Table columns={columns} dataSource={bookings} 
-           onRow={(record, rowIndex) => {
-            return {
-              onClick: (event) => {
-                navigate.push(`/main/my_account/bookings/${record.id}`);
-              }, // click row
-            };
-          }}
-          rowClassName="cursor-pointer"
+          <Table
+            columns={columns}
+            dataSource={bookings}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: (event) => {
+                  navigate.push(`/main/my_account/bookings/${record.id}`);
+                }, // click row
+              };
+            }}
+            rowClassName="cursor-pointer"
           />
         </div>
       </MainContainer>
