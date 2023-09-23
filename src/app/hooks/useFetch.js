@@ -39,8 +39,8 @@ const useFetch = (axiosParams, options, token) => {
         url: params.url,
       });
 
-      if(options?.onComplete){
-        options?.onComplete(result)
+      if (options?.onComplete) {
+        options?.onComplete(result);
       }
       setResponse(result);
       return result;

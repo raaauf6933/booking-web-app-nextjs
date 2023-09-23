@@ -104,8 +104,20 @@ const History = ({ booking }) => {
             </div>
           ),
         };
-      // case "ADD_AMENITY":
-      //   return <TimelineAdditionals event={event} date={event.created} />;
+      case 'ADD_AMENITY':
+        return {
+          children: (
+            <div className="flex justify-between">
+              <span>
+                {event?.user} added <b>{event?.additional_type}</b>
+              </span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+        };
       // case "ADD_CHARGES":
       //   return <TimelineAdditionals event={event} date={event.created} />;
       // case "ADD_DISCOUNT":

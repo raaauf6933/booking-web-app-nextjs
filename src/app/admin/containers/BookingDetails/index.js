@@ -4,10 +4,13 @@ import {
   Card,
   Col,
   Divider,
+  Empty,
   Input,
   InputNumber,
   Modal,
   Row,
+  Select,
+  Table,
 } from 'antd';
 import PaymentDetails from '../../components/BookingDetails/PaymentDetails';
 import RoomDetails from '../../components/BookingDetails/RoomDetails';
@@ -21,14 +24,16 @@ import { useState } from 'react';
 import { UpdateBookingStatus } from './utils';
 import usePost from '../../../hooks/usePost';
 import { useNotification } from '../../../main/context/notification/context';
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { getToken } from '../../context/auth/utils';
 const { confirm } = Modal;
 
 const BookingDetails = () => {
   const params = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [openModalAdditional, setOpenModalAdditional] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [amenity, setAmenity] = useState();
   const { notif } = useNotification();
   const navigate = useRouter().push;
   const { response, refetch, error } = useFetch({
@@ -38,6 +43,31 @@ const BookingDetails = () => {
       id: params?.id,
     },
   });
+
+  const [saveAmenity, saveAmenityOpts] = usePost({
+    onComplete: () => {
+      notif['success']({
+        message: 'Booking Updated!',
+      });
+
+      setOpenModalAdditional(false);
+
+      refetch();
+    },
+  });
+
+  const { response: amenities } = useFetch({
+    method: 'GET',
+    url: '/amenity',
+  });
+
+  const amenitiesChoices = amenities?.data
+    ? amenities?.data.map((e) => ({
+        label: e?.name,
+        value: e._id,
+        rate: e.rate,
+      }))
+    : [];
 
   if (error) {
     navigate('/404');
@@ -103,6 +133,21 @@ const BookingDetails = () => {
     });
   };
 
+  const onSaveAdditionals = () => {
+    saveAmenity(
+      {
+        method: 'POST',
+        url: '/booking/add_amenity',
+        data: {
+          id: params?.id,
+          amenity_id: JSON.stringify(amenity),
+          qty: 1,
+        },
+      },
+      getToken(),
+    );
+  };
+
   return (
     <>
       <div className="block relative">
@@ -137,7 +182,33 @@ const BookingDetails = () => {
                   />
                 </Col>
                 <Col md={24} lg={24}>
-                  <Card title="Additionals"></Card>
+                  <Card
+                    title="Additionals"
+                    extra={
+                      <Button onClick={() => setOpenModalAdditional(true)}>
+                        <PlusOutlined />
+                      </Button>
+                    }
+                  >
+                    <Table
+                      dataSource={booking?.additionals}
+                      columns={[
+                        {
+                          title: 'Name',
+                          dataIndex: 'name',
+                        },
+                        {
+                          title: 'Rate',
+                          dataIndex: 'rate',
+                        },
+                        {
+                          title: 'Qty',
+                          dataIndex: 'qty',
+                        },
+                      ]}
+                    />
+                    {/* <Empty/> */}
+                  </Card>
                 </Col>
               </Row>
             </Col>
@@ -191,6 +262,47 @@ const BookingDetails = () => {
               }}
             />
           </div>
+        </Modal>
+        <Modal
+          open={openModalAdditional}
+          title="Additionals"
+          onCancel={() => setOpenModalAdditional((prevState) => !prevState)}
+          footer={[
+            <Button
+              key="cancel"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={() => setOpenModalAdditional((prevState) => !prevState)}
+            >
+              Cancel
+            </Button>,
+            <Button
+              className="bg-info"
+              key="submit"
+              type="primary"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={onSaveAdditionals}
+              disabled={!amenity?.id}
+            >
+              Confirm
+            </Button>,
+          ]}
+        >
+          <Select
+            value={amenity?.id}
+            onChange={(id) =>
+              setAmenity({
+                id: id,
+                rate: amenitiesChoices.find((e) => e.value === id)?.rate,
+                name: amenitiesChoices.find((e) => e.value === id)?.label,
+              })
+            }
+            className="w-full"
+            size="large"
+            placeholder="Select Items"
+            options={amenitiesChoices}
+          ></Select>
         </Modal>
         <ActionBar
           okLabel={okLabel()}
