@@ -1,12 +1,8 @@
-
-
-
-
 import React from 'react';
+import Discounts from '../../../containers/Configuration/Discounts';
 
+const DiscountsPage = () => {
+  return <Discounts />;
+};
 
-const Discounts = () => {
-    return ( <h1>test</h1> );
-}
- 
-export default Discounts;
+export default DiscountsPage;

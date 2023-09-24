@@ -9,30 +9,36 @@ export const AdminRoutes = [
     label: 'Dashboard',
     icon: <LuLayoutDashboard />,
     url: '/admin',
+    user_roles: ['ADMIN', 'FRONT_DESK'],
   },
   {
     label: 'Bookings',
     icon: <CiBookmark />,
     url: '/admin/bookings',
+    user_roles: ['ADMIN', 'FRONT_DESK'],
   },
   {
     label: 'Rooms Management',
     icon: <FaBed />,
     url: '/admin/rooms_management',
+    user_roles: ['ADMIN'],
   },
   {
     label: 'Customers',
     icon: <FiUsers />,
     url: '/admin/customers',
+    user_roles: ['ADMIN'],
   },
   {
     label: 'Users Management',
     icon: <FiUsers />,
     url: '/admin/users',
+    user_roles: ['ADMIN'],
   },
   {
     label: 'Configuration',
     icon: <RiListSettingsLine />,
     url: '/admin/configuration',
+    user_roles: ['ADMIN'],
   },
 ];

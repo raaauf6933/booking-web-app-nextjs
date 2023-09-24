@@ -30,7 +30,7 @@ function DashboardLayout({ children }) {
               ...e,
               key: e.url,
               onClick: () => navigate.push(e.url),
-            }))}
+            })).filter((route) => route?.user_roles.includes(user?.user_type))}
           />
         </Sider>
         <AntDLayout>

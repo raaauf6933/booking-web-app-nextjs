@@ -1,10 +1,32 @@
-import { Card, Divider } from 'antd';
+'use client';
+import { Button, Card, Divider } from 'antd';
+import { PlusOutlined, CheckOutlined } from '@ant-design/icons';
 
-const PaymentDetails = ({ booking }) => {
+const PaymentDetails = ({ booking, setOpenModalDiscount }) => {
   const billing = booking?.billing;
 
   return (
-    <Card title="Payment Details">
+    <Card
+      title="Payment Details"
+      extra={
+        (booking?.status === 'PENDING' || booking?.status === 'CONFIRMED') && (
+          <Button
+            disabled={billing?.discount?.amount}
+            onClick={() => setOpenModalDiscount(true)}
+          >
+            {billing?.discount?.amount ? (
+              <>
+                <CheckOutlined /> Discount Applied
+              </>
+            ) : (
+              <>
+                <PlusOutlined /> Discount
+              </>
+            )}
+          </Button>
+        )
+      }
+    >
       <div>
         <div className="flex justify-between">
           <span>Sub-Total (rooms)</span>
@@ -29,7 +51,13 @@ const PaymentDetails = ({ booking }) => {
         </div>
         <div className="flex justify-between">
           <span>Discount</span>
-          <span>PHP 0.00</span>
+          <span>
+            {' '}
+            {new Intl.NumberFormat('en-PH', {
+              style: 'currency',
+              currency: 'PHP',
+            }).format(billing?.discount?.amount)}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold">Total Amount</span>

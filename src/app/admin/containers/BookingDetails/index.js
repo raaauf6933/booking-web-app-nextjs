@@ -32,8 +32,10 @@ const BookingDetails = () => {
   const params = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [openModalAdditional, setOpenModalAdditional] = useState(false);
+  const [openModalDiscount, setOpenModalDiscount] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [amenity, setAmenity] = useState();
+  const [discount, setDiscount] = useState();
   const { notif } = useNotification();
   const navigate = useRouter().push;
   const { response, refetch, error } = useFetch({
@@ -56,6 +58,18 @@ const BookingDetails = () => {
     },
   });
 
+  const [saveDiscount, saveDiscountOpts] = usePost({
+    onComplete: () => {
+      notif['success']({
+        message: 'Booking Updated!',
+      });
+
+      setOpenModalDiscount(false);
+
+      refetch();
+    },
+  });
+
   const { response: amenities } = useFetch({
     method: 'GET',
     url: '/amenity',
@@ -66,6 +80,20 @@ const BookingDetails = () => {
         label: e?.name,
         value: e._id,
         rate: e.rate,
+      }))
+    : [];
+
+  const { response: discounts } = useFetch({
+    method: 'GET',
+    url: '/discount',
+  });
+
+  const discountsChoices = discounts?.data
+    ? discounts?.data.map((e) => ({
+        label: e?.name,
+        value: e._id,
+        discount_rate: e.discount_rate,
+        type: e.type,
       }))
     : [];
 
@@ -148,6 +176,20 @@ const BookingDetails = () => {
     );
   };
 
+  const onSaveDiscount = () => {
+    saveDiscount(
+      {
+        method: 'POST',
+        url: '/booking/add_discount',
+        data: {
+          id: params?.id,
+          discount_type: JSON.stringify(discount),
+        },
+      },
+      getToken(),
+    );
+  };
+
   return (
     <>
       <div className="block relative">
@@ -164,7 +206,10 @@ const BookingDetails = () => {
                   <RoomDetails booking={booking} />
                 </Col>
                 <Col md={24} lg={24}>
-                  <PaymentDetails booking={booking} />
+                  <PaymentDetails
+                    booking={booking}
+                    setOpenModalDiscount={setOpenModalDiscount}
+                  />
                 </Col>
                 <Col md={24} lg={24}>
                   <Card title="Booking History">
@@ -185,9 +230,11 @@ const BookingDetails = () => {
                   <Card
                     title="Additionals"
                     extra={
-                      <Button onClick={() => setOpenModalAdditional(true)}>
-                        <PlusOutlined />
-                      </Button>
+                      booking?.status === 'CHECK_IN' && (
+                        <Button onClick={() => setOpenModalAdditional(true)}>
+                          <PlusOutlined />
+                        </Button>
+                      )
                     }
                   >
                     <Table
@@ -302,6 +349,49 @@ const BookingDetails = () => {
             size="large"
             placeholder="Select Items"
             options={amenitiesChoices}
+          ></Select>
+        </Modal>
+        <Modal
+          open={openModalDiscount}
+          title="Discounts"
+          onCancel={() => setOpenModalDiscount((prevState) => !prevState)}
+          footer={[
+            <Button
+              key="cancel"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={() => setOpenModalDiscount((prevState) => !prevState)}
+            >
+              Cancel
+            </Button>,
+            <Button
+              className="bg-info"
+              key="submit"
+              type="primary"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={onSaveDiscount}
+              disabled={!discount?.id}
+            >
+              Confirm
+            </Button>,
+          ]}
+        >
+          <Select
+            value={discount?.id}
+            onChange={(id) =>
+              setDiscount({
+                id: id,
+                discount_rate: discountsChoices.find((e) => e.value === id)
+                  ?.discount_rate,
+                type: discountsChoices.find((e) => e.value === id)?.type,
+                name: discountsChoices.find((e) => e.value === id)?.label,
+              })
+            }
+            className="w-full"
+            size="large"
+            placeholder="Select Items"
+            options={discountsChoices}
           ></Select>
         </Modal>
         <ActionBar

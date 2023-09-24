@@ -64,15 +64,17 @@ const MyBookings = () => {
   });
 
   const bookings = response?.data
-    ? response?.data?.map((booking) => ({
-        ...booking,
-        id: booking?._id,
-        total_amount: new Intl.NumberFormat('en-PH', {
-          style: 'currency',
-          currency: 'PHP',
-        }).format(booking?.billing?.total_amount),
-        nights: computeNights(booking),
-      }))
+    ? response?.data
+        ?.map((booking) => ({
+          ...booking,
+          id: booking?._id,
+          total_amount: new Intl.NumberFormat('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+          }).format(booking?.billing?.total_amount),
+          nights: computeNights(booking),
+        }))
+        .reverse()
     : [];
 
   return (

@@ -34,6 +34,10 @@ const GuestDetails = ({ booking, showConfirmCancel }) => {
           <span>{guest?.street_address}</span>
         </div>
         <div className="flex justify-between">
+          <span className="font-bold mb-2">No. Guest:</span>
+          <span>{guest?.no_guest}</span>
+        </div>
+        <div className="flex justify-between">
           <span className="font-bold mb-2">Check-in:</span>
           <span>{new Date(booking?.check_in).toDateString()}</span>
         </div>

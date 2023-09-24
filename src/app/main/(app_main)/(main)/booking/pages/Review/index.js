@@ -101,7 +101,7 @@ const Review = () => {
         last_name: customer?.last_name,
         email: customer?.email,
         contact_number: customer?.contact_number,
-        no_guest: 1,
+        no_guest: bookingState?.guest?.no_guest,
         street_address: customer?.address?.address,
         province: '',
         city: customer?.address?.city,
@@ -245,7 +245,7 @@ const Review = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold mb-2">No. Guest</span>
-                      <span>1</span>
+                      <span>{bookingState?.guest?.no_guest}</span>
                     </div>
                   </div>
                 </div>

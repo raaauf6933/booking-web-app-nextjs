@@ -1,8 +1,8 @@
 'use client';
 import Card from '../AntD/card';
 import DatePicker from '../AntD/datepicker';
-import { Button, Col, Row } from 'antd';
-import React, { useContext } from 'react';
+import { Button, Col, InputNumber, Row } from 'antd';
+import React, { useContext, useState } from 'react';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -21,6 +21,7 @@ const MainDatePicker = () => {
     check_in: '' || bookingState.check_in,
     check_out: '' || bookingState.check_out,
   });
+  const [noGuest, setNoGuest] = useState(1);
 
   const { isAuthenticated } = useClientAuth();
 
@@ -45,6 +46,10 @@ const MainDatePicker = () => {
         type: 'SET_DATES',
         payload: dates,
       });
+      bookingDispatch({
+        type: 'SET_NO_GUEST',
+        payload: noGuest,
+      });
 
       navigate.push('/main/booking/select_room');
     }
@@ -55,7 +60,7 @@ const MainDatePicker = () => {
       <div className="relative bottom-28 lg:w-full w-full lg:px-16 ">
         <Card className="shadow-xl p-4">
           <Row gutter={[16, 24]} justify="center" align="bottom">
-            <Col xs={24} sm={24} md={8} xl={8}>
+            <Col xs={24} sm={24} md={6} xl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2 font-bold opacity-50">
                   <label>CHECK-IN</label>
@@ -71,7 +76,7 @@ const MainDatePicker = () => {
                 />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={8} xl={8}>
+            <Col xs={24} sm={24} md={6} xl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2  font-bold opacity-50">
                   <label>CHECK-OUT</label>
@@ -93,11 +98,36 @@ const MainDatePicker = () => {
                 />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={8} xl={8}>
+            <Col xs={24} sm={24} md={6} xl={6}>
+              <div className="w-full">
+                <div className="px-2 pb-2  font-bold opacity-50">
+                  <label>NO. GUEST</label>
+                </div>
+                <InputNumber
+                  defaultValue={1}
+                  value={noGuest}
+                  min={1}
+                  max={10}
+                  onChange={(e) =>
+                    setNoGuest((prevState) =>
+                      isNaN(parseInt(e)) ? prevState : parseInt(e),
+                    )
+                  }
+                  // onKeyUp={(e) => {
+                  //   e.preventDefault();
+                  //   e.target.blur();
+                  // }}
+                  type="number"
+                  className="h-16 w-full inline-flex items-center text-xl"
+                />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={6} xl={6}>
               <Button
                 className="w-full bg-warning border-white focus:border-white outline-none  h-16"
                 type="default"
                 onClick={() => handleSubmitDate()}
+                disabled={hasNull(dates)}
               >
                 <span className="text-white text-lg">Check Availability</span>
               </Button>

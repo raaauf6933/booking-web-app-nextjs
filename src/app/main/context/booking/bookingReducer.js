@@ -24,6 +24,9 @@ const bookingReducer = (state, action) => {
       newState.check_in = payload.check_in;
       newState.check_out = payload.check_out;
       break;
+    case 'SET_NO_GUEST':
+      newState.guest.no_guest = payload;
+      break;
     case 'ADD_ROOM':
       const tempState = newState.room_details;
       tempState.push({ ...payload });

@@ -1,18 +1,18 @@
 'use client';
-import { Button, Input, InputNumber, Modal, Switch, Table } from 'antd';
+import React, { useState } from 'react';
 import Header from '../../../components/Header';
-import { useState } from 'react';
-import usePost from '../../../../hooks/usePost';
+import { Button, Input, InputNumber, Modal, Select, Switch, Table } from 'antd';
 import useFetch from '../../../../hooks/useFetch';
+import usePost from '../../../../hooks/usePost';
 import StatusTag from '../../../components/StatusTag';
 
-const Amenities = () => {
+const Discounts = () => {
   const { response, refetch } = useFetch({
     method: 'GET',
-    url: '/amenity',
+    url: '/discount',
   });
 
-  const amenities = response?.data;
+  const discounts = response?.data;
   const [openModal, setOpenModal] = useState({
     isOpen: false,
     id: null,
@@ -20,14 +20,15 @@ const Amenities = () => {
 
   const [form, setForm] = useState({
     name: '',
-    rate: 1,
+    type: null,
+    discount_rate: 1,
     status: 'ACT',
   });
 
-  const { response: amenity, loading: loadingFetchAmenity } = useFetch(
+  const { response: discount, loading: loadingFetchAmenity } = useFetch(
     {
       method: 'POST',
-      url: '/amenity',
+      url: '/discount',
       data: {
         id: openModal.id,
       },
@@ -37,14 +38,15 @@ const Amenities = () => {
       onComplete: (e) => {
         setForm({
           name: e?.data?.name,
-          rate: e?.data?.rate?.toString(),
+          type: e?.data?.type,
+          discount_rate: e?.data?.discount_rate?.toString(),
           status: e?.data?.status,
         });
       },
     },
   );
 
-  const [createAmenity, createAmenityOpts] = usePost({
+  const [createDiscount, createDiscountOpts] = usePost({
     onComplete: () => {
       setOpenModal((prevState) => ({
         ...prevState,
@@ -59,7 +61,7 @@ const Amenities = () => {
     },
   });
 
-  const [editAmenity, editAmenityOpts] = usePost({
+  const [editDiscount, editDiscountOpts] = usePost({
     onComplete: () => {
       setOpenModal((prevState) => ({
         ...prevState,
@@ -67,7 +69,8 @@ const Amenities = () => {
       }));
       setForm({
         name: '',
-        rate: 1,
+        type: null,
+        discount_rate: 1,
         status: 'ACT',
       });
       refetch();
@@ -75,17 +78,17 @@ const Amenities = () => {
   });
 
   const handleSubmit = () => {
-    createAmenity({
+    createDiscount({
       method: 'POST',
-      url: 'amenity/create_amenity',
+      url: 'discount/create_discount',
       data: form,
     });
   };
 
   const handleSubmitEdit = () => {
-    editAmenity({
+    editDiscount({
       method: 'POST',
-      url: 'amenity/edit_amenity',
+      url: 'discount/edit_discount',
       data: {
         id: openModal?.id,
         ...form,
@@ -96,7 +99,7 @@ const Amenities = () => {
   return (
     <div>
       <Header
-        title="Amenities"
+        title="Discounts"
         actions={
           <>
             <Button
@@ -108,13 +111,13 @@ const Amenities = () => {
                 }))
               }
             >
-              <span className="text-white">Create Amenity</span>
+              <span className="text-white">Create Discount</span>
             </Button>
           </>
         }
       />
       <Table
-        dataSource={amenities}
+        dataSource={discounts}
         columns={[
           {
             title: 'Name',
@@ -122,9 +125,14 @@ const Amenities = () => {
             dataIndex: 'name',
           },
           {
-            title: 'Rate',
-            key: 'rate',
-            dataIndex: 'rate',
+            title: 'Type',
+            key: 'type',
+            dataIndex: 'type',
+          },
+          {
+            title: 'Discount Rate',
+            key: 'discount_rate',
+            dataIndex: 'discount_rate',
           },
           {
             title: 'Status',
@@ -151,7 +159,7 @@ const Amenities = () => {
       />
       <Modal
         open={openModal.isOpen}
-        title={amenity?.data?.name || 'Create Amenity'}
+        title={discount?.data?.name || 'Create Discount'}
         onCancel={() => {
           setOpenModal((prevState) => ({
             ...prevState,
@@ -169,7 +177,7 @@ const Amenities = () => {
           <Button
             key="cancel"
             loading={false}
-            disabled={createAmenityOpts.loading}
+            disabled={createDiscountOpts.loading}
             onClick={() => {
               setOpenModal((prevState) => ({
                 ...prevState,
@@ -190,7 +198,7 @@ const Amenities = () => {
             key="submit"
             type="primary"
             loading={false}
-            disabled={createAmenityOpts.loading}
+            disabled={createDiscountOpts.loading}
             onClick={openModal?.id ? handleSubmitEdit : handleSubmit}
           >
             Submit
@@ -214,17 +222,32 @@ const Amenities = () => {
                   }))
                 }
               />
-              <InputNumber
-                addonBefore="PHP"
+              <Select
+                options={[
+                  { value: 'FIXED', label: 'FIXED' },
+                  { value: 'PERCENTAGE', label: 'PERCENTAGE' },
+                ]}
+                value={form.type}
+                onSelect={(e) =>
+                  setForm((prevState) => ({
+                    ...prevState,
+                    type: e,
+                  }))
+                }
                 size="large"
-                value={form.rate}
-                className="mb-4"
+                className="w-full mb-4"
+                placeholder="Type"
+              />
+              <InputNumber
+                size="large"
+                value={form.discount_rate}
+                className="mb-4 w-full"
                 placeholder="Rate"
                 min={1}
                 onChangeCapture={(e) =>
                   setForm((prevState) => ({
                     ...prevState,
-                    rate:
+                    discount_rate:
                       isNaN(parseInt(e?.currentTarget?.value)) ||
                       parseInt(e.currentTarget.value) < 1
                         ? prevState.rate
@@ -258,4 +281,4 @@ const Amenities = () => {
   );
 };
 
-export default Amenities;
+export default Discounts;
