@@ -1,5 +1,5 @@
 'use client';
-import { Table, Typography } from 'antd';
+import { Button, Table, Typography } from 'antd';
 import StatusTag from '../../components/StatusTag';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
@@ -65,7 +65,18 @@ const Bookings = () => {
 
   return (
     <div>
-      <Header title="Bookings" />
+      <Header
+        title="Bookings"
+        actions={
+          <Button
+            onClick={() => navigate.push('/admin/bookings/create')}
+            type="primary"
+            className="bg-info text-white"
+          >
+            Create Walk-in
+          </Button>
+        }
+      />
       <Table
         dataSource={bookings}
         columns={columns}

@@ -126,7 +126,7 @@ const MainRoomCard = (props) => {
             </span>
           </div>
           <div>
-            <Tooltip title="search">
+            <Tooltip title="remove">
               <Button
                 disabled={disableRemove}
                 onClick={handleRemoveRoom}
@@ -135,7 +135,7 @@ const MainRoomCard = (props) => {
               />
             </Tooltip>
             <span className="text-2xl px-5">{qty}</span>
-            <Tooltip title="search">
+            <Tooltip title="add">
               <Button
                 disabled={disableAdd}
                 onClick={handleAddRoom}

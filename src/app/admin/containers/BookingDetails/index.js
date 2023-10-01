@@ -68,6 +68,11 @@ const BookingDetails = () => {
 
       refetch();
     },
+    onError: (e) => {
+      notif['error']({
+        message: e?.response?.data?.message,
+      });
+    },
   });
 
   const { response: amenities } = useFetch({
