@@ -1,52 +1,41 @@
+'use client';
+import { Empty } from 'antd';
+import useFetch from '../../../../hooks/useFetch';
 import MainContainer from '../../../components/MainContainer';
 import MainHeader from '../../../components/MainHeader';
 import MainRoomCard from '../../../components/MainRoomCard';
 
-export const metadata = {
-  title: 'Rooms',
-  description: '...',
-};
-
 const SelectRoomPage = () => {
+  const { response } = useFetch({
+    method: 'GET',
+    url: '/room_types',
+  });
+
+  const rooms = response?.data ? response.data : [];
+
   return (
     <>
       <MainHeader title="Our Room" />
       <MainContainer>
-        <div className="pb-8">
-          <MainRoomCard
-            image={[
-              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474564/sut3gag8cjhwqajjxpts.jpg',
-            ]}
-          />
-        </div>
-        <div className="pb-8">
-          <MainRoomCard
-            image={[
-              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/pxroawxg7ktfu3ccfbpq.jpg',
-            ]}
-          />
-        </div>
-        <div className="pb-8">
-          <MainRoomCard
-            image={[
-              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/qmptobbacpb8quoc9ury.jpg',
-            ]}
-          />
-        </div>
-        <div className="pb-8">
-          <MainRoomCard
-            image={[
-              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/e3qiwrmbmtk8flbztltg.jpg',
-            ]}
-          />
-        </div>
-        <div className="pb-8">
-          <MainRoomCard
-            image={[
-              'https://res.cloudinary.com/dwnnnqffb/image/upload/v1690474563/sxbfhdstmtok6cmswajc.jpg',
-            ]}
-          />
-        </div>
+        {rooms && rooms?.length > 0 ? (
+          rooms.map((e) => {
+            return (
+              <div className="pb-8">
+                <MainRoomCard
+                  image={e?.images?.map((e) => e.url)}
+                  data={{
+                    room_rate: e.room_rate,
+                    ...e,
+                  }}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <div className="py-10">
+            <Empty />
+          </div>
+        )}
       </MainContainer>
     </>
   );
