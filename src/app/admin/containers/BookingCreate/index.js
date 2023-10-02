@@ -8,6 +8,8 @@ import {
   Input,
   InputNumber,
   Row,
+  Select,
+  Skeleton,
   Table,
   Tooltip,
 } from 'antd';
@@ -19,6 +21,7 @@ import BookingSummary from './BookingSummary';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import useFetch from '../../../hooks/useFetch';
+import RoomSelection from './RoomSelection';
 
 dayjs.extend(customParseFormat);
 
@@ -30,20 +33,25 @@ const BookingCreate = () => {
     defaultValues: {
       dates: [dayjs().startOf('day'), dayjs().add(1, 'days').startOf('day')],
       room_details: [],
-      guest_details: {
-        first_name: '',
-        last_name: '',
-        email: '',
-        contact_number: '',
-        no_guest: 1,
-        street_address: '',
-        province: '',
-        city: '',
-      },
+      customer: null,
+      no_guest: 1,
     },
   });
 
   const booking = watch();
+
+  const { response: customerResponse } = useFetch({
+    method: 'GET',
+    url: '/customers',
+  });
+
+  const customers = customerResponse?.data
+    ? customerResponse?.data?.map((e) => ({
+        ...e,
+        label: `${e.first_name} ${e.last_name}`,
+        value: e._id,
+      }))
+    : [];
 
   const { response, loading: loadingRooms } = useFetch(
     {
@@ -95,17 +103,27 @@ const BookingCreate = () => {
                   name="customer"
                   control={control}
                   render={({ field }) => (
-                    <Input
+                    <Select
                       {...field}
-                      placeholder="customer"
                       size="large"
-                      required
+                      className="w-full"
+                      showSearch
+                      placeholder="Select a person"
+                      optionFilterProp="children"
+                      // onChange={onChange}
+                      // onSearch={onSearch}
+                      filterOption={(input, option) =>
+                        (option?.label ?? '')
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      options={customers}
                     />
                   )}
                 />
                 <div className="mt-1">
                   <span className="opacity-70 text-xs">
-                    First time guess?{' '}
+                    First time guest?{' '}
                     <Link href="/admin/customers/create" className="text-info">
                       Create Profile here
                     </Link>
@@ -138,75 +156,70 @@ const BookingCreate = () => {
                     No. Guest
                   </span>
                 </div>
-                <InputNumber
-                  defaultValue={1}
-                  size="large"
-                  className="w-full"
-                  min={1}
-                  max={10}
-                  //   onChange={(e) =>
-                  //     setNoGuest((prevState) =>
-                  //       isNaN(parseInt(e)) ? prevState : parseInt(e),
-                  //     )
-                  //   }
-                  // onKeyUp={(e) => {
-                  //   e.preventDefault();
-                  //   e.target.blur();
-                  // }}
-                  type="number"
+                <Controller
+                  name="no_guest"
+                  control={control}
+                  render={({ field }) => (
+                    <InputNumber
+                      {...field}
+                      size="large"
+                      className="w-full"
+                      min={1}
+                      max={10}
+                      //   onChange={(e) =>
+                      //     setNoGuest((prevState) =>
+                      //       isNaN(parseInt(e)) ? prevState : parseInt(e),
+                      //     )
+                      //   }
+                      onKeyUp={(e) => {
+                        e.preventDefault();
+                        e.target.blur();
+                      }}
+                      type="number"
+                    />
+                  )}
                 />
               </Col>
             </Row>
-            <Table
-              className="mt-5"
-              loading={loadingRooms}
-              dataSource={rooms}
-              columns={[
-                {
-                  title: 'Room Type',
-                  key: 'name',
-                  dataIndex: 'name',
-                },
-                {
-                  title: 'Rate',
-                  key: 'room_rate',
-                  dataIndex: 'room_rate',
-                },
-                {
-                  title: 'No. Available',
-                  key: 'no_available',
-                  dataIndex: 'no_available',
-                },
-                {
-                  title: 'Action',
-                  render: (_, record) => (
-                    <>
-                      <Tooltip title="remove">
-                        <Button
-                          // disabled={disableRemove}
-                          // onClick={handleRemoveRoom}
-                          shape="circle"
-                          icon={<MinusOutlined />}
-                        />
-                      </Tooltip>
-                      <span className="text-base px-3">{1}</span>
-                      <Tooltip title="add">
-                        <Button
-                          // disabled={disableAdd}
-                          // onClick={handleAddRoom}
-                          shape="circle"
-                          icon={<PlusOutlined />}
-                        />
-                      </Tooltip>
-                    </>
-                  ),
-                },
-              ]}
-            ></Table>
+            <div className="mt-10 shadow p-5 overflow-y-scroll max-h-screen">
+              {rooms && !loadingRooms && rooms.length > 0 ? (
+                rooms?.map((room) => (
+                  <div className="mb-5">
+                    <RoomSelection
+                      booking={booking}
+                      type="SELECT_ROOM"
+                      setRoomDetails={(val) => setValue('room_details', val)}
+                      data={room}
+                      image={room.images.map((e) => e.url)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <>
+                  <Skeleton active />
+                </>
+              )}
+            </div>
           </Card>
         </Col>
         <Col xs={24} sm={24} md={6} lg={6}>
           <BookingSummary booking={booking} />
+          <div className="mt-4">
+            <Button
+              disabled={
+                booking?.room_details?.length < 1 ||
+                !booking?.customer ||
+                !booking.dates ||
+                booking.dates.length !== 2 ||
+                !booking.no_guest
+              }
+              className="w-full bg-info"
+              size="large"
+              // onClick={() => navigate.push('/main/booking/review')}
+            >
+              <span className="text-white text-lg">Confirm</span>
+            </Button>
+          </div>
         </Col>
       </Row>
     </div>
