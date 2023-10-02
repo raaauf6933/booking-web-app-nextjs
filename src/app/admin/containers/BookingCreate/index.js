@@ -12,6 +12,7 @@ import {
   Skeleton,
   Table,
   Tooltip,
+  message
 } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { DatePicker } from 'antd';
@@ -22,12 +23,15 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import useFetch from '../../../hooks/useFetch';
 import RoomSelection from './RoomSelection';
+import usePost from '../../../hooks/usePost';
+import { useRouter } from 'next/navigation';
 
 dayjs.extend(customParseFormat);
 
 const { RangePicker } = DatePicker;
 
 const BookingCreate = () => {
+  const navigate = useRouter();
   const { control, handleSubmit, setValue, watch } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -86,142 +90,174 @@ const BookingCreate = () => {
     return current && current < dayjs().startOf('day');
   };
 
+  const [createBooking, createBookingOpts] = usePost({
+    onComplete: () => {
+      message.success("Booking has been successfully created!");
+      navigate.push("/admin/bookings")
+      
+    },
+    onError: () => {
+      message.error("Something went wrong..");
+    },
+  });
+
+  const onSubmit = (e) => {
+    const data = {
+      ...e,
+      check_in: dayjs(e.dates[0]).format('YYYY-MM-DD'),
+      check_out: dayjs(e.dates[1]).format('YYYY-MM-DD'),
+      rooms: e.room_details
+    };
+
+    createBooking({
+      method: 'POST',
+      url: '/booking/create_booking_walkin',
+      data,
+    });
+  };
+
   return (
     <div>
       <Header title="Booking Form" />
-      <Row gutter={[24, 24]}>
-        <Col xs={24} sm={24} md={16} lg={16}>
-          <Card className="">
-            <Row gutter={[24, 24]}>
-              <Col xs={24} sm={24} md={24} lg={24}>
-                <div className="mb-1">
-                  <span className="opacity-70 font-semibold text-base">
-                    Customer
-                  </span>
-                </div>
-                <Controller
-                  name="customer"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      size="large"
-                      className="w-full"
-                      showSearch
-                      placeholder="Select a person"
-                      optionFilterProp="children"
-                      // onChange={onChange}
-                      // onSearch={onSearch}
-                      filterOption={(input, option) =>
-                        (option?.label ?? '')
-                          .toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
-                      options={customers}
-                    />
-                  )}
-                />
-                <div className="mt-1">
-                  <span className="opacity-70 text-xs">
-                    First time guest?{' '}
-                    <Link href="/admin/customers/create" className="text-info">
-                      Create Profile here
-                    </Link>
-                  </span>
-                </div>
-              </Col>
-              <Col xs={24} sm={24} md={12} lg={12}>
-                <div className="mb-1">
-                  <span className="opacity-70 font-semibold text-base">
-                    Check-in & Check-out
-                  </span>
-                </div>
-
-                <Controller
-                  name="dates"
-                  control={control}
-                  render={({ field }) => (
-                    <RangePicker
-                      {...field}
-                      size="large"
-                      disabledDate={disabledDate}
-                      className="w-full"
-                    />
-                  )}
-                />
-              </Col>
-              <Col xs={24} sm={24} md={12} lg={12}>
-                <div className="mb-1">
-                  <span className="opacity-70 font-semibold text-base">
-                    No. Guest
-                  </span>
-                </div>
-                <Controller
-                  name="no_guest"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      size="large"
-                      className="w-full"
-                      min={1}
-                      max={10}
-                      //   onChange={(e) =>
-                      //     setNoGuest((prevState) =>
-                      //       isNaN(parseInt(e)) ? prevState : parseInt(e),
-                      //     )
-                      //   }
-                      onKeyUp={(e) => {
-                        e.preventDefault();
-                        e.target.blur();
-                      }}
-                      type="number"
-                    />
-                  )}
-                />
-              </Col>
-            </Row>
-            <div className="mt-10 shadow p-5 overflow-y-scroll max-h-screen">
-              {rooms && !loadingRooms && rooms.length > 0 ? (
-                rooms?.map((room) => (
-                  <div className="mb-5">
-                    <RoomSelection
-                      booking={booking}
-                      type="SELECT_ROOM"
-                      setRoomDetails={(val) => setValue('room_details', val)}
-                      data={room}
-                      image={room.images.map((e) => e.url)}
-                    />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Row gutter={[24, 24]}>
+          <Col xs={24} sm={24} md={16} lg={16}>
+            <Card className="">
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                  <div className="mb-1">
+                    <span className="opacity-70 font-semibold text-base">
+                      Customer
+                    </span>
                   </div>
-                ))
-              ) : (
-                <>
-                  <Skeleton active />
-                </>
-              )}
+                  <Controller
+                    name="customer"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        size="large"
+                        className="w-full"
+                        showSearch
+                        placeholder="Select a person"
+                        optionFilterProp="children"
+                        // onChange={onChange}
+                        // onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.label ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={customers}
+                      />
+                    )}
+                  />
+                  <div className="mt-1">
+                    <span className="opacity-70 text-xs">
+                      First time guest?{' '}
+                      <Link
+                        href="/admin/customers/create"
+                        className="text-info"
+                      >
+                        Create Profile here
+                      </Link>
+                    </span>
+                  </div>
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <div className="mb-1">
+                    <span className="opacity-70 font-semibold text-base">
+                      Check-in & Check-out
+                    </span>
+                  </div>
+
+                  <Controller
+                    name="dates"
+                    control={control}
+                    render={({ field }) => (
+                      <RangePicker
+                        {...field}
+                        size="large"
+                        disabledDate={disabledDate}
+                        className="w-full"
+                      />
+                    )}
+                  />
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <div className="mb-1">
+                    <span className="opacity-70 font-semibold text-base">
+                      No. Guest
+                    </span>
+                  </div>
+                  <Controller
+                    name="no_guest"
+                    control={control}
+                    render={({ field }) => (
+                      <InputNumber
+                        {...field}
+                        size="large"
+                        className="w-full"
+                        min={1}
+                        max={10}
+                        //   onChange={(e) =>
+                        //     setNoGuest((prevState) =>
+                        //       isNaN(parseInt(e)) ? prevState : parseInt(e),
+                        //     )
+                        //   }
+                        onKeyUp={(e) => {
+                          e.preventDefault();
+                          e.target.blur();
+                        }}
+                        type="number"
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
+              <div className="mt-10 shadow p-5 overflow-y-scroll max-h-screen">
+                {rooms && !loadingRooms && rooms.length > 0 ? (
+                  rooms?.map((room) => (
+                    <div className="mb-5">
+                      <RoomSelection
+                        booking={booking}
+                        type="SELECT_ROOM"
+                        setRoomDetails={(val) => setValue('room_details', val)}
+                        data={room}
+                        image={room.images.map((e) => e.url)}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <Skeleton active />
+                  </>
+                )}
+              </div>
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={6} lg={6}>
+            <BookingSummary booking={booking} />
+            <div className="mt-4">
+              <Button
+                disabled={
+                  booking?.room_details?.length < 1 ||
+                  !booking?.customer ||
+                  !booking.dates ||
+                  booking.dates.length !== 2 ||
+                  !booking.no_guest ||
+                  createBookingOpts.loading
+                }
+                className="w-full bg-info"
+                size="large"
+                htmlType="submit"
+              >
+                <span className="text-white text-lg">Confirm</span>
+              </Button>
             </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={6} lg={6}>
-          <BookingSummary booking={booking} />
-          <div className="mt-4">
-            <Button
-              disabled={
-                booking?.room_details?.length < 1 ||
-                !booking?.customer ||
-                !booking.dates ||
-                booking.dates.length !== 2 ||
-                !booking.no_guest
-              }
-              className="w-full bg-info"
-              size="large"
-              // onClick={() => navigate.push('/main/booking/review')}
-            >
-              <span className="text-white text-lg">Confirm</span>
-            </Button>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </form>
     </div>
   );
 };

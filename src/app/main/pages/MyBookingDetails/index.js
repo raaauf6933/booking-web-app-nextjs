@@ -1,6 +1,6 @@
 'use client';
 import MainContainer from '@main_components/MainContainer';
-import { Card, Divider, Table, List, Button, Tag, Upload , message} from 'antd';
+import { Card, Divider, Table, List, Button, Tag, Upload, message } from 'antd';
 import { useParams } from 'next/navigation';
 import useFetch from '../../../hooks/useFetch';
 import StatusTag from '../../../admin/components/StatusTag';
@@ -294,16 +294,17 @@ const MyBookingDetails = () => {
                           '100%': '#87d068',
                         },
                         strokeWidth: 3,
-                        format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
-                      
+                        format: (percent) =>
+                          percent && `${parseFloat(percent.toFixed(2))}%`,
                       }}
-                     onChange={(info)=> {
-                      if (info.file.status === 'done') {
-                      
-                        message.success(`${info.file.name} file uploaded successfully`);
-                        refetch();
-                      }
-                     }}
+                      onChange={(info) => {
+                        if (info.file.status === 'done') {
+                          message.success(
+                            `${info.file.name} file uploaded successfully`,
+                          );
+                          refetch();
+                        }
+                      }}
                       disabled={loading}
                       action={`${process.env.NEXT_PUBLIC_API_URL}/booking/upload_receipt`}
                       data={{
@@ -324,7 +325,7 @@ const MyBookingDetails = () => {
                         return isImage || Upload.LIST_IGNORE;
                       }}
                     >
-                      <Button htmlType='button'>
+                      <Button htmlType="button">
                         <span>Upload Receipt</span>
                       </Button>
                     </Upload>
