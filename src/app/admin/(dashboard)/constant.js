@@ -3,7 +3,7 @@ import { FaBed } from 'react-icons/fa';
 import { CiBookmark } from 'react-icons/ci';
 import { RiListSettingsLine } from 'react-icons/ri';
 import { FiUsers } from 'react-icons/fi';
-
+import {BsFileEarmarkSpreadsheet} from "react-icons/bs"
 export const AdminRoutes = [
   {
     label: 'Dashboard',
@@ -33,6 +33,12 @@ export const AdminRoutes = [
     label: 'Users Management',
     icon: <FiUsers />,
     url: '/admin/users',
+    user_roles: ['ADMIN'],
+  },
+  {
+    label: 'Reports',
+    icon: <BsFileEarmarkSpreadsheet />,
+    url: '/admin/reports',
     user_roles: ['ADMIN'],
   },
   {
