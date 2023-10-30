@@ -35,12 +35,12 @@ export const AdminRoutes = [
     url: '/admin/users',
     user_roles: ['ADMIN'],
   },
-  {
-    label: 'Reports',
-    icon: <BsFileEarmarkSpreadsheet />,
-    url: '/admin/reports',
-    user_roles: ['ADMIN'],
-  },
+  // {
+  //   label: 'Reports',
+  //   icon: <BsFileEarmarkSpreadsheet />,
+  //   url: '/admin/reports',
+  //   user_roles: ['ADMIN'],
+  // },
   {
     label: 'Configuration',
     icon: <RiListSettingsLine />,

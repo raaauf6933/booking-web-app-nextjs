@@ -6,6 +6,7 @@ import {
   Input,
   InputNumber,
   Row,
+  Select,
   Table,
   notification,
 } from 'antd';
@@ -18,6 +19,7 @@ import MultipleUpload from '../../components/MultipleUpload';
 import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
 import { PlusCircleFilled } from '@ant-design/icons';
+import StatusTag from '../../components/StatusTag';
 
 const RoomForm = () => {
   const navigate = navgiationRouter();
@@ -71,6 +73,12 @@ const RoomForm = () => {
       navigate.push('/admin/rooms_management');
     },
   });
+
+  const [updateRoomStatus,updateRoomStatusOpts] = usePost({
+    onComplete:() => {
+      refetch()
+    }
+  })
 
   const [CreateRoom] = usePost({
     onComplete: () => refetch(),
@@ -266,6 +274,41 @@ const RoomForm = () => {
                 title: 'Room No.',
                 dataIndex: 'room_number',
                 key: 'room_number',
+              },
+              {
+                title: 'Status',
+                dataIndex: 'status',
+                key: 'status',
+                render: (_, record) => (
+                  <>
+                    <Select
+                    value={record.status}
+                    loading={updateRoomStatusOpts.loading}
+                    onChange={(e)=> {
+                      updateRoomStatus({
+                        method:"POST",
+                        url:"/room_types/update_room_status",
+                        data: {
+                          roomTypeId: router?.id,
+                          roomId: record._id,
+                          status: e
+                        }
+                      })
+                    }}
+                      placeholder="status"
+                      options={[
+                        {
+                          label: 'Active',
+                          value: 'ACT',
+                        },
+                        {
+                          label: 'In-Active',
+                          value: 'INACTIVE',
+                        },
+                      ]}
+                    />
+                  </>
+                ),
               },
             ]}
             dataSource={room_data?.data?.rooms}
