@@ -1,12 +1,14 @@
+import logo from "@assets/image/resort_logo.png"
+
 const MainFooter = () => {
   return (
     <footer className="bg-black text-white">
       <div className="w-full p-16">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a href="https://flowbite.com/" className="flex items-center">
+            <a href="https://grandvillaresortandrestaurant.com/main" className="flex items-center">
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
+                src={logo.src}
                 className="h-8 mr-3"
                 alt="FlowBite Logo"
               />

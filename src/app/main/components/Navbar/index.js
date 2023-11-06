@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Button, Divider, Dropdown } from 'antd';
 import { useClientAuth } from '../../context/auth/context';
+import logo from "@assets/image/resort_logo.png"
 
 const inter = {
   style: null,
@@ -21,12 +22,12 @@ const Navbar = () => {
   return (
     <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 shadow-md">
       <div className="bg-black max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-6">
-        <a href="https://flowbite.com/" className="flex items-center">
-          {/* <img
-            src="https://flowbite.com/docs/images/logo.svg"
+        <a href="https://grandvillaresortandrestaurant.com/main" className="flex items-center">
+          <img
+            src={logo.src}
             className="h-8 mr-3"
             alt="Flowbite Logo"
-          /> */}
+          />
           <span
             className="self-center text-2xl font-semibold whitespace-nowrap text-warning c dark:text-white"
             style={inter.style}

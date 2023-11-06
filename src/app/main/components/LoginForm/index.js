@@ -85,6 +85,12 @@ const LoginForm = () => {
             Create New
           </Link>
         </div>
+        <div className="mt-1 text-center">
+          <span className="text-white mr-2">Forget Password?</span>{' '}
+          <Link href="/main/forgot_password" className="text-warning">
+            Reset Password
+          </Link>
+        </div>
       </form>
     </>
   );
