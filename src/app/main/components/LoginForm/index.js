@@ -73,7 +73,7 @@ const LoginForm = () => {
           <Button
             className="bg-warning border-black w-full py-3 h-1/6"
             htmlType="submit"
-            disabled={loading}
+            loading={loading}
           >
             <span className="text-white">Login</span>
           </Button>

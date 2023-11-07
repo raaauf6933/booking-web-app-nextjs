@@ -7,7 +7,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const [requestPasswordReset] = usePost({
+  const [requestPasswordReset,requestPasswordResetOpts] = usePost({
     onComplete: () => {
       setIsSuccess(true);
     },
@@ -66,6 +66,8 @@ const ForgotPassword = () => {
               <Button
                 className="bg-warning border-black w-full py-3 h-1/6"
                 onClick={onSubmit}
+                disabled={!email}
+                loading={requestPasswordResetOpts.loading}
               >
                 <span className="text-white">Send</span>
               </Button>

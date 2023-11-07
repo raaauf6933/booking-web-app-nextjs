@@ -175,7 +175,7 @@ const RegistartionForm = () => {
           <Button
             className="bg-warning border-black w-full py-3 h-1/6"
             htmlType="submit"
-            disabled={createCustomerOpts.loading}
+            loading={createCustomerOpts.loading}
           >
             <span className="text-white">Sign up</span>
           </Button>

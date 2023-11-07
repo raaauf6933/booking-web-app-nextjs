@@ -12,7 +12,7 @@ function LoginPageComponent(params) {
     password: '',
   });
 
-  const { login, isAuthenticated } = useAdminAuth();
+  const { login, isAuthenticated, loading } = useAdminAuth();
   const handleSubmit = async () => {
     login({
       username: form.username,
@@ -64,6 +64,7 @@ function LoginPageComponent(params) {
               onClick={handleSubmit}
               className="w-10/12 bg-info"
               shape="round"
+              loading={loading}
             >
               {' '}
               <span className="text-white text-lg">Login</span>

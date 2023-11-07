@@ -13,7 +13,7 @@ const ResetPassword = () => {
   const params = useParams();
   const customer = jwtDecode(params?.id);
 
-  const [requestPasswordReset] = usePost({
+  const [requestPasswordReset,requestPasswordResetOpts] = usePost({
     onComplete: () => {
       setIsSuccess(true);
     },
@@ -89,6 +89,7 @@ const ResetPassword = () => {
                 className="bg-warning border-black w-full py-3 h-1/6"
                 onClick={onSubmit}
                 disabled={!password || !confirmPassword}
+                loading={requestPasswordResetOpts.loading}
               >
                 <span className="text-white">Submit</span>
               </Button>

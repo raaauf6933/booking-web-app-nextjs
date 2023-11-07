@@ -350,8 +350,9 @@ const Review = () => {
           </Button>
           <Button
             size="large"
-            disabled={!paymentType || createBookingOpts.loading}
+            disabled={!paymentType }
             onClick={handleSave}
+            loading={createBookingOpts.loading}
           >
             <span>Confirm</span>
           </Button>
