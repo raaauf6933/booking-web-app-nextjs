@@ -1,11 +1,15 @@
-import ForgotPassword from '@main_components/ForgotPassword';
+
+
+import ResetPassword from '@main_components/ResetPasword';
 import React from 'react';
 
-const ForgotPasswordPage = () => {
-  return (
-    <>
-      <div className="flex flex-wrap flex-row ">
-        <ForgotPassword />
+
+
+const ResetPasswordPage = () => {
+    return ( <>
+    
+    <div className="flex flex-wrap flex-row ">
+      <ResetPassword/>
         <div
           className="bg-white flex h-screen flex-1"
           style={{
@@ -27,9 +31,7 @@ const ForgotPasswordPage = () => {
             </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-};
-
-export default ForgotPasswordPage;
+      </div></> );
+}
+ 
+export default ResetPasswordPage;
