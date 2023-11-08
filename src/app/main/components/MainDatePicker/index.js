@@ -128,7 +128,6 @@ const MainDatePicker = () => {
                 type="default"
                 onClick={() => handleSubmitDate()}
                 disabled={hasNull(dates)}
-                loading
               >
                 <span className="text-white text-lg">Check Availability</span>
               </Button>
