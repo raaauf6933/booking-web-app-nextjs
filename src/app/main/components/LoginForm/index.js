@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import BookingContext from '../../context/booking/bookingContext';
+import logo from "@assets/image/logo_gv.png"
 
 const LoginForm = () => {
   const navigate = useRouter();
@@ -36,6 +37,7 @@ const LoginForm = () => {
     <>
       <form onSubmit={handleSubmit(handleLogin)}>
         <div className="text-3xl text-warning mb-5 text-center">
+          <img src={logo.src} className='mb-3'/>
           <span>Welcome to Grand Villa Hotel</span>
         </div>
         <div className="pb-5">

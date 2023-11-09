@@ -8,6 +8,7 @@ import ProtectedPage from '../ProtectedPage';
 import Link from 'next/link';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useAdminAuth } from '../../context/auth/context';
+import logo from "@assets/image/logo_gv.png"
 
 const { Header, Content, Footer, Sider } = AntDLayout;
 
@@ -21,7 +22,9 @@ function DashboardLayout({ children }) {
     <ProtectedPage>
       <AntDLayout>
         <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
-          <div className="h-8 m-4 bg-grey1 rounded-sm"></div>
+          <div className="m-4 rounded-sm">
+            <img src={logo.src} />
+          </div>
           <Menu
             theme="dark"
             mode="inline"

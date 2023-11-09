@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Button, Divider, Dropdown } from 'antd';
 import { useClientAuth } from '../../context/auth/context';
-import logo from "@assets/image/resort_logo.png"
+import logo from "@assets/image/logo_gv.png"
 
 const inter = {
   style: null,

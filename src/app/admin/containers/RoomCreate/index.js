@@ -18,7 +18,7 @@ import { useRouter as navgiationRouter, useParams } from 'next/navigation';
 import MultipleUpload from '../../components/MultipleUpload';
 import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
-import { PlusCircleFilled } from '@ant-design/icons';
+import { PlusCircleFilled, DeleteOutlined } from '@ant-design/icons';
 import StatusTag from '../../components/StatusTag';
 
 const RoomForm = () => {
@@ -74,8 +74,14 @@ const RoomForm = () => {
     },
   });
 
-  const [updateRoomStatus,updateRoomStatusOpts] = usePost({
-    onComplete:() => {
+  const [updateRoomStatus, updateRoomStatusOpts] = usePost({
+    onComplete: () => {
+      refetch();
+    },
+  });
+
+  const [deleteRoom, deleteRoomOpts] = usePost({
+    onComplete: ()=> {
       refetch()
     }
   })
@@ -282,19 +288,19 @@ const RoomForm = () => {
                 render: (_, record) => (
                   <>
                     <Select
-                    value={record.status}
-                    loading={updateRoomStatusOpts.loading}
-                    onChange={(e)=> {
-                      updateRoomStatus({
-                        method:"POST",
-                        url:"/room_types/update_room_status",
-                        data: {
-                          roomTypeId: router?.id,
-                          roomId: record._id,
-                          status: e
-                        }
-                      })
-                    }}
+                      value={record.status}
+                      loading={updateRoomStatusOpts.loading}
+                      onChange={(e) => {
+                        updateRoomStatus({
+                          method: 'POST',
+                          url: '/room_types/update_room_status',
+                          data: {
+                            roomTypeId: router?.id,
+                            roomId: record._id,
+                            status: e,
+                          },
+                        });
+                      }}
                       placeholder="status"
                       options={[
                         {
@@ -309,6 +315,28 @@ const RoomForm = () => {
                     />
                   </>
                 ),
+              },
+              {
+                title: 'Action',
+                render: (_, record) => {
+                  return (
+                    <>
+                      {' '}
+                      <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => deleteRoom({
+                          method: "POST",
+                          url: '/room_types/delete_room',
+                          data: {
+                            id: router?.id,
+                            room_id: record._id,
+                          }
+                        })}
+                      />
+                    </>
+                  );
+                },
               },
             ]}
             dataSource={room_data?.data?.rooms}
