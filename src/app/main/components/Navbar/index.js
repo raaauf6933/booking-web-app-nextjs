@@ -32,7 +32,7 @@ const Navbar = () => {
             className="self-center text-2xl font-semibold whitespace-nowrap text-warning c dark:text-white"
             style={inter.style}
           >
-            Grand Villa Resort
+            {/* Grand Villa Resort */}
           </span>
         </a>
         <button

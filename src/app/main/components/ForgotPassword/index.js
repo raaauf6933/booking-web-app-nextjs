@@ -2,6 +2,7 @@
 import { Button, Input, message } from 'antd';
 import React, { useState } from 'react';
 import usePost from '../../../hooks/usePost';
+import Link from 'next/link';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +43,8 @@ const ForgotPassword = () => {
           <div className="mb-5">
             <span className="text-white">
                 We have sent you an email with link to reset your password. Thank you!
-            </span>
+            </span><br/><br/>
+          <Link className='text-warning' href="login">Go to Login?</Link>
           </div>
         ) : (
           <>

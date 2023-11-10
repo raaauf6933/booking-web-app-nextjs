@@ -62,6 +62,7 @@ const Dashboard = () => {
       );
       return;
     }
+    
 
     pdfMake.createPdf(dd(result.data, reports, user)).open();
   };

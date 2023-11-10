@@ -22,6 +22,11 @@ const columns = [
     key: 'username',
   },
   {
+    title: 'Role',
+    dataIndex: 'user_type',
+    key: 'user_type',
+  },
+  {
     title: 'Status',
     render: (_, record) => (
       <>

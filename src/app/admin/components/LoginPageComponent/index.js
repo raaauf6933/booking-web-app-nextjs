@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAdminAuth } from '../../context/auth/context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 function LoginPageComponent(params) {
   const navigate = useRouter().push;
@@ -59,6 +60,11 @@ function LoginPageComponent(params) {
               required
               type="password"
             />
+            <div>
+          <span className='text-left'>
+              <Link href="/admin/forgot_password">Forgot Password? </Link>
+            </span>
+          </div>
             <Button
               size="large"
               onClick={handleSubmit}
@@ -70,6 +76,7 @@ function LoginPageComponent(params) {
               <span className="text-white text-lg">Login</span>
             </Button>
           </div>
+          
         </Card>
       </div>
     </div>

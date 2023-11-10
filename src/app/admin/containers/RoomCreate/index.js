@@ -8,7 +8,9 @@ import {
   Row,
   Select,
   Table,
+  Modal,
   notification,
+  message,
 } from 'antd';
 import usePost from '../../../hooks/usePost';
 import useFetch from '../../../hooks/useFetch';
@@ -18,8 +20,10 @@ import { useRouter as navgiationRouter, useParams } from 'next/navigation';
 import MultipleUpload from '../../components/MultipleUpload';
 import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
-import { PlusCircleFilled, DeleteOutlined } from '@ant-design/icons';
+import { PlusCircleFilled, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import StatusTag from '../../components/StatusTag';
+const { confirm } = Modal;
+
 
 const RoomForm = () => {
   const navigate = navgiationRouter();
@@ -64,6 +68,16 @@ const RoomForm = () => {
       navigate.push('/admin/rooms_management');
     },
   });
+
+  const [deleteRoomType, deleteRoomTypeOpts] = usePost({
+    onComplete:()=> {
+      message.success('Room Deleted!')
+      navigate.push('/admin/rooms_management');
+    },
+    onError:()=> {
+      message.error("Something went wrong")
+    }
+  })
 
   const [EditRoomType] = usePost({
     onComplete: () => {
@@ -160,11 +174,35 @@ const RoomForm = () => {
     resetRoom();
   };
 
+  const showDeleteRoom = () => {
+    confirm({
+      title: 'Are you sure you want to delete this room?',
+      icon: <ExclamationCircleFilled />,
+      // content: 'Some descriptions',
+      okButtonProps: {
+        className: 'bg-info',
+      },
+      okText: 'Yes',
+      onOk() {
+        deleteRoomType(
+          {
+            method: 'POST',
+            url: '/room_types/delete_roomtype',
+            data: {
+              id:router?.id,
+            },
+          },
+          // getToken(),
+        );
+      },
+    });
+  };
+
   return (
     <>
       {contextText}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card title="Room Type">
+        <Card title="Room Type" extra={<><Button danger onClick={showDeleteRoom}>Delete Room</Button></>}>
           <Row gutter={[12, 12]}>
             <Col xs={24} sm={24} md={24} lg={24}>
               <div className="mb-1">
@@ -270,7 +308,7 @@ const RoomForm = () => {
             </Col>
           </Row>
         </Card>
-        <ActionBar disabled={uploadLoading || loading} okButtonType="submit" />
+        <ActionBar okLabel="Save" disabled={uploadLoading || loading} okButtonType="submit" />
       </form>
       {router?.id ? (
         <Card rootClassName="mt-5" title="Rooms">
