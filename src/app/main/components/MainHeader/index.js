@@ -6,6 +6,7 @@ import image2 from '@assets/image/image_2.jpeg';
 import image3 from '@assets/image/image_3.jpg';
 import { Barlow_Condensed } from 'next/font/google';
 import classNames from 'classnames';
+import useFetch from '../../../hooks/useFetch';
 
 const inter = Barlow_Condensed({ weight: '400', subsets: ['latin'] });
 
@@ -16,25 +17,26 @@ const MainHeader = (props) => {
     height: primary ? '600px' : '300px',
   };
 
+
+  const {response} = useFetch({
+    method:"GET",
+    url:"/site_settings/carousels"
+  })
+
+  const carousels = response?.data
+
   return (
     <div>
       <div className="relative block">
         <Carousel autoplay={primary} dots={false}>
-          <div>
+          {carousels?.map((img)=> {
+            return  <div>
             <div className="main-image" style={imgHeight}>
-              <img className="" src={image1.src} />
+              <img className="" src={img.url} />
             </div>
           </div>
-          <div>
-            <div className="main-image" style={imgHeight}>
-              <img className="" src={image2.src} />
-            </div>
-          </div>
-          <div>
-            <div className="main-image" style={imgHeight}>
-              <img className="" src={image3.src} />
-            </div>
-          </div>
+          })}
+         
         </Carousel>
         <div className="overlay"></div>
         {title && (
