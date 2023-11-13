@@ -26,6 +26,7 @@ import usePost from '../../../hooks/usePost';
 import { useNotification } from '../../../main/context/notification/context';
 import { ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { getToken } from '../../context/auth/utils';
+import commaNumber from 'comma-number';
 const { confirm } = Modal;
 
 const BookingDetails = () => {
@@ -297,14 +298,22 @@ const BookingDetails = () => {
               addonBefore="PHP"
               size="large"
               value={paymentAmount}
+              formatter={(value) => commaNumber(parseInt(value))}
               placeholder="Enter Payment Amount"
-              onChangeCapture={(e) =>
+              onChange={(e) => {
                 setPaymentAmount((prevState) =>
-                  isNaN(parseInt(e.currentTarget.value))
-                    ? prevState
-                    : parseInt(e.currentTarget.value),
-                )
-              }
+                  isNaN(parseInt(e)) ? prevState : parseInt(e),
+                );
+              }}
+              // onChangeCapture={(e) => {
+              //   console.log(e.currentTarget.value)
+              // }
+              // setPaymentAmount((prevState) =>
+              //   isNaN(parseInt(e.currentTarget.value))
+              //     ? prevState
+              //     : parseInt(e.currentTarget.value),
+              // )
+              // }
               onKeyUp={(e) => {
                 console.log(e.keyCode);
                 if (e.keyCode === 13) {

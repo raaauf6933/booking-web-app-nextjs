@@ -152,7 +152,7 @@ const MainRoomCard = (props) => {
   return (
     <>
       <Row gutter={[0, 26]}>
-        <Col xs={24} sm={24} md={12} lg={12}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
           <div className="pb-5">
             {' '}
             <Image.PreviewGroup items={image}>
@@ -170,7 +170,7 @@ const MainRoomCard = (props) => {
             </Image.PreviewGroup>{' '}
           </div>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12}>
+        <Col  xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
           <div
             className="flex flex-col justify-center w-full"
             style={inter.style}
@@ -193,7 +193,10 @@ const MainRoomCard = (props) => {
               </span>
             </div>
             <div className=" h-28 overflow-y-scroll mb-7">
-              <p className="text-lg">
+              <pre className="text-lg" style={{
+                whiteSpace:"pre-wrap",
+                wordWrap:"break-word"
+              }}>
                 {data?.details.description}
                 {/* Sink into the plush, king-sized bed, adorned with premium-quality
               linens that guarantee a restful night's sleep. The thoughtful
@@ -201,7 +204,7 @@ const MainRoomCard = (props) => {
               utmost comfort throughout your stay. For added convenience, the
               bedside table features accessible charging ports, so your devices
               are always ready to use. */}
-              </p>
+              </pre>
             </div>
             <div>
               {ActionComponent()}

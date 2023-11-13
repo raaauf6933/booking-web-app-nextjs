@@ -1,50 +1,80 @@
 'use client';
-import { Button, Table, Typography } from 'antd';
+import { Button, Input, Space, Table, Tooltip, Typography } from 'antd';
 import StatusTag from '../../components/StatusTag';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 import useFetch from '../../../hooks/useFetch';
-
-const columns = [
-  {
-    title: 'Booking Reference',
-    dataIndex: 'booking_reference',
-    key: 'booking_reference',
-  },
-  {
-    title: 'Guest',
-    dataIndex: 'guest',
-    key: 'guest',
-  },
-  {
-    title: 'Booking Date',
-    dataIndex: 'booking_date',
-    key: 'booking_date',
-  },
-  {
-    title: 'Check-in',
-    dataIndex: 'check_in',
-    key: 'check_in',
-  },
-  {
-    title: 'Check-out',
-    dataIndex: 'check_out',
-    key: 'check_out',
-  },
-  {
-    title: 'Status',
-    render: (_, record) => (
-      <>
-        {' '}
-        <StatusTag status={record.status} type="BOOKING" />
-      </>
-    ),
-    key: 'status',
-  },
-];
+import { useRef, useState } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
+import useSearchFilter from '../../../hooks/useSearchFilter';
 
 const Bookings = () => {
   const navigate = useRouter();
+  const { getColumnSearchProps } = useSearchFilter()
+
+  const columns = [
+    {
+      title: 'Booking Reference',
+      dataIndex: 'booking_reference',
+      key: 'booking_reference',
+      ...getColumnSearchProps('booking_reference'),
+    },
+    
+    {
+      title: 'Guest',
+      dataIndex: 'guest',
+      key: 'guest',
+      ...getColumnSearchProps('guest'),
+    },
+    {
+      title: 'Rooms',
+      render: (_, record) => {
+        return (
+          <Tooltip
+            title={record?.rooms
+              ?.map((e) => `${e?.roomtype_name} (${e.room_num})`)
+              .join(',')}
+          >
+            <span>
+              {
+                record?.rooms?.map(
+                  (e) => `${e?.roomtype_name} (${e.room_num})`,
+                )[0]
+              }
+              ...
+            </span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: 'Booking Date',
+      dataIndex: 'booking_date',
+      key: 'booking_date',
+    },
+    {
+      title: 'Check-in',
+      dataIndex: 'check_in',
+      key: 'check_in',
+    },
+    {
+      title: 'Check-out',
+      dataIndex: 'check_out',
+      key: 'check_out',
+    },
+    {
+      title: 'Status',
+      render: (_, record) => (
+        <>
+          {' '}
+          <StatusTag status={record.status} type="BOOKING" />
+        </>
+      ),
+      key: 'status',
+    },
+  ];
+  
 
   const { response } = useFetch({
     method: 'POST',

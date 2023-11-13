@@ -5,6 +5,16 @@ import { PlusOutlined, CheckOutlined } from '@ant-design/icons';
 const PaymentDetails = ({ booking, setOpenModalDiscount }) => {
   const billing = booking?.billing;
 
+  const handleGetNoNights = () => {
+    const date1 = new Date(booking?.check_in);
+    const date2 = new Date(booking?.check_out);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  };
+
+
   return (
     <Card
       title="Payment Details"
@@ -36,7 +46,7 @@ const PaymentDetails = ({ booking, setOpenModalDiscount }) => {
               style: 'currency',
               currency: 'PHP',
             }).format(billing?.sub_total)}{' '}
-            X 3 night(s)
+            X {handleGetNoNights()} night(s)
           </span>
         </div>
         <div className="flex justify-between">
