@@ -21,7 +21,7 @@ const Configuration = () => {
                 </span>
                 <div>
                   <span className="text-xl text-info font-semibold">
-                    Amenities
+                    Amenities / Additionals
                   </span>
                 </div>
               </div>

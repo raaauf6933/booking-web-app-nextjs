@@ -8,7 +8,7 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useContext, useState } from 'react';
 
 const RoomSelection = (props) => {
-  const { image, size, type, data, booking, setRoomDetails } = props;
+  const { image, size, type, data, booking, setRoomDetails, variant } = props;
 
   const bookingState = booking;
   const { room_details: roomContext } = bookingState;
@@ -180,7 +180,7 @@ const RoomSelection = (props) => {
           >
             <span className="text-base font-bold pb-3">{data?.name}</span>
             <div className="pb-4">
-              <span className="text-base font-extrabold text-info">
+              <span className={`text-base font-extrabold ${variant ==="guest" ? 'text-warning': 'text-info'}`}>
                 {new Intl.NumberFormat('en-PH', {
                   style: 'currency',
                   currency: 'PHP',

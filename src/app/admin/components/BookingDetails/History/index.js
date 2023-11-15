@@ -122,8 +122,20 @@ const History = ({ booking }) => {
       //   return <TimelineAdditionals event={event} date={event.created} />;
       // case "ADD_DISCOUNT":
       //   return <TimelineDiscount event={event} date={event.created} />;
-      // case "GUEST_MODIFY_BOOKING":
-      //   return <TimelineModify event={event} date={event.created} />;
+       case "GUEST_MODIFY_BOOKING":
+        return {
+          children: (
+            <div className="flex justify-between">
+              <span>
+                {event?.message}
+              </span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+        };
       default:
         break;
     }

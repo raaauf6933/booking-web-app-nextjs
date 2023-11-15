@@ -60,7 +60,7 @@ const MainDatePicker = () => {
       <div className="relative bottom-28 lg:w-full w-full lg:px-16 ">
         <Card className="shadow-xl p-4">
           <Row gutter={[16, 24]} justify="center" align="bottom">
-            <Col xs={24} sm={24} md={6} xl={6}>
+            <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2 font-bold opacity-50">
                   <label>CHECK-IN</label>
@@ -76,7 +76,7 @@ const MainDatePicker = () => {
                 />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={6} xl={6}>
+            <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2  font-bold opacity-50">
                   <label>CHECK-OUT</label>
@@ -98,7 +98,7 @@ const MainDatePicker = () => {
                 />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={6} xl={6}>
+            <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2  font-bold opacity-50">
                   <label>NO. GUEST</label>
@@ -122,14 +122,14 @@ const MainDatePicker = () => {
                 />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={6} xl={6}>
+            <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
               <Button
                 className="w-full bg-warning border-white focus:border-white outline-none  h-16"
                 type="default"
                 onClick={() => handleSubmitDate()}
                 disabled={hasNull(dates)}
               >
-                <span className="text-white text-lg">Check Availability</span>
+                <span className={`${hasNull(dates) ? 'text-grey2' : 'text-white'} text-md`}>Check Availability</span>
               </Button>
             </Col>
           </Row>

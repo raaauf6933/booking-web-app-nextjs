@@ -11,7 +11,7 @@ import useSearchFilter from '../../../hooks/useSearchFilter';
 
 const Bookings = () => {
   const navigate = useRouter();
-  const { getColumnSearchProps } = useSearchFilter()
+  const { getColumnSearchProps } = useSearchFilter();
 
   const columns = [
     {
@@ -20,7 +20,7 @@ const Bookings = () => {
       key: 'booking_reference',
       ...getColumnSearchProps('booking_reference'),
     },
-    
+
     {
       title: 'Guest',
       dataIndex: 'guest',
@@ -45,6 +45,25 @@ const Bookings = () => {
               ...
             </span>
           </Tooltip>
+        );
+      },
+    },
+    {
+      title: 'No. Rooms',
+      render: (_, record) => {
+        return <span>{record.rooms?.length}</span>;
+      },
+    },
+    {
+      title: 'Total Amount',
+      render: (_, record) => {
+        return (
+          <span>
+            {new Intl.NumberFormat('en-PH', {
+              style: 'currency',
+              currency: 'PHP',
+            }).format(record?.billing?.total_amount)}
+          </span>
         );
       },
     },
@@ -74,7 +93,6 @@ const Bookings = () => {
       key: 'status',
     },
   ];
-  
 
   const { response } = useFetch({
     method: 'POST',

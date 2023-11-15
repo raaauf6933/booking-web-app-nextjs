@@ -1,5 +1,8 @@
 'use client';
 import { Button, Input, InputNumber, Modal, Switch, Table } from 'antd';
+import {
+  DeleteOutlined
+} from '@ant-design/icons';
 import Header from '../../../components/Header';
 import { useState } from 'react';
 import usePost from '../../../../hooks/usePost';
@@ -93,10 +96,16 @@ const Amenities = () => {
     });
   };
 
+  const [deleteAmenity] = usePost({
+    onComplete: ()=> {
+      refetch()
+    }
+  })
+
   return (
     <div>
       <Header
-        title="Amenities"
+        title="Amenities / Additionals"
         actions={
           <>
             <Button
@@ -108,7 +117,7 @@ const Amenities = () => {
                 }))
               }
             >
-              <span className="text-white">Create Amenity</span>
+              <span className="text-white">Create Item</span>
             </Button>
           </>
         }
@@ -136,6 +145,32 @@ const Amenities = () => {
             ),
             key: 'status',
           },
+          {
+            title: "Action",
+            render: (_, record) => {
+              return (
+                <>
+                  {' '}
+                  <Button
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation();      
+                      deleteAmenity({
+                        method: 'POST',
+                        url: '/amenity/delete',
+                        data: {
+                          id: record?._id,
+                        },
+                      })
+                    }
+                    
+                    }
+                  />
+                </>
+              );
+            }
+          }
         ]}
         onRow={(record, rowIndex) => {
           return {
@@ -151,7 +186,7 @@ const Amenities = () => {
       />
       <Modal
         open={openModal.isOpen}
-        title={amenity?.data?.name || 'Create Amenity'}
+        title={amenity?.data?.name || 'Create Item'}
         onCancel={() => {
           setOpenModal((prevState) => ({
             ...prevState,

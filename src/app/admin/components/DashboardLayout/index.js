@@ -2,13 +2,24 @@
 import React, { Suspense } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useRouter, usePathname } from 'next/navigation';
-import { Layout as AntDLayout, Button, Dropdown, Menu, Spin } from 'antd';
+import {
+  Layout as AntDLayout,
+  Avatar,
+  Badge,
+  Button,
+  Dropdown,
+  Menu,
+  Popover,
+  Spin,
+} from 'antd';
 import { AdminRoutes } from './../../(dashboard)/constant';
 import ProtectedPage from '../ProtectedPage';
 import Link from 'next/link';
-import { CaretDownOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, BellOutlined } from '@ant-design/icons';
 import { useAdminAuth } from '../../context/auth/context';
-import logo from "@assets/image/logo_gv.png"
+import logo from '@assets/image/logo_gv.png';
+import NotificationContent from './components/NotificationContent';
+import useFetch from '../../../hooks/useFetch';
 
 const { Header, Content, Footer, Sider } = AntDLayout;
 
@@ -17,6 +28,13 @@ function DashboardLayout({ children }) {
   const { user, logout } = useAdminAuth();
   const navigate = useRouter();
   const route = usePathname();
+
+  const { response: notification_response } = useFetch({
+    method: "GET",
+    url: "/notification/"
+  })
+
+  const notifications = notification_response?.data
 
   return (
     <ProtectedPage>
@@ -55,7 +73,22 @@ function DashboardLayout({ children }) {
                   height: 64,
                 }}
               />
+
               <div className="flex items-end mr-5">
+                <div className="mr-5">
+                  <Popover
+                    content={<NotificationContent notifications={notifications}/>}
+                    title="Notifications"
+                    trigger="click"
+                    className='w-full'
+                    rootClassName='w-96'
+                  >
+                    <Badge count={notifications?.length} className='cursor-pointer'>
+                      <Avatar shape="circle" icon={<BellOutlined />} />
+                    </Badge>
+                  </Popover>
+                </div>
+
                 <Dropdown
                   menu={{
                     items: [
@@ -113,7 +146,7 @@ function DashboardLayout({ children }) {
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }} className="bg-white">
-            Created with Ant Design ©2023
+            Grand Villa Resort © 2023
           </Footer>
         </AntDLayout>
       </AntDLayout>

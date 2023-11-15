@@ -5,7 +5,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
 const BookingSummary = (props) => {
-  const { booking: bookingState } = props;
+  const { booking: bookingState, variant, setTotalAmount } = props;
 
   const check_in = bookingState?.dates
     ? dayjs(bookingState?.dates[0], 'YYYY-MM-DD').toDate()
@@ -58,6 +58,10 @@ const BookingSummary = (props) => {
   };
 
   const getTotalAmount = () => {
+    if(setTotalAmount){
+      setTotalAmount(getSubTotal() * handleGetNoNights())
+    }
+  
     return getSubTotal() * handleGetNoNights();
   };
 

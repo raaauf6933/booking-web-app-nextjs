@@ -27,6 +27,10 @@ const MainAboutUs = () => {
               landscape, providing a haven of peace and relaxation for every
               guest.
             </p>
+            <span className="p-2 text-xl font-semibold">Our Mission</span>
+            <p className="text-xl p-2">
+              Our Mission is to create memorable experiences by providing exceptional hospitality, comfort, and relaxation in a serene environment. We aim to exceed guest expectations through personalized service, delightful amenities, and a commitment to sustainability.
+            </p>
             <span className="p-2 text-xl font-semibold">Our Vision</span>
             <p className="text-xl p-2">
               Our Vision At Grand Villa Resort, our vision is to create a serene

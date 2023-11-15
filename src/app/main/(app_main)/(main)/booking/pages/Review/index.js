@@ -1,5 +1,5 @@
 'use client';
-import { Row, Col, Table, Button, Divider, Radio } from 'antd';
+import { Row, Col, Table, Button, Divider, Radio, Collapse, Checkbox } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import BookingContext from '../../../../../context/booking/bookingContext';
 import { useRouter } from 'next/navigation';
@@ -47,7 +47,7 @@ const Review = () => {
   const { user, isAuthenticated } = useClientAuth();
   const [paymentType, setPaymentType] = useState(null);
   const { notif } = useNotification();
-
+  const [isChecked, setIsChecked] = useState(false)
   const { response } = useFetch({
     method: 'GET',
     url: '/customers/customer',
@@ -340,6 +340,65 @@ const Review = () => {
             </div>
           </div>
         </div>
+        <Collapse
+          items={[
+            {
+              key: '1',
+              label: 'Terms & Condition',
+              children: (
+                <>
+                  <span
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    wordWrap: 'break-word',
+                  }}
+                >
+                 The following terms and conditions are strictly implemented for check-in guests:
+                </span><br/>
+                <span>
+
+                1.    The hotel is only authorized to accommodate properly registered guests. For this purpose, guests are to present their valid national ID card or passport, or any other valid proof of identity to the relevant hotel front desk employee.
+                </span><br/>
+                <span>2. Guests are to use their rooms for the agreed period. If the guest breaks their stay, money will not be refunded.</span><br/>
+                <span>3. Be advised to keep valuables in your personal rooms. Keep your doors lock closed when not in the room or when you are sleeping. We have a permanent guard in the hotel but he can’t see all rooms at the same time. The hotel will not in any whatsoever, be responsible for the loss of guests belongings or any other property.</span>
+                </>
+              
+              ),
+            },
+            {
+              key: '2',
+              label: 'Data Privacy',
+              children: (
+                <>
+ <span
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    wordWrap: 'break-word',
+                  }}
+                >
+                <Checkbox onChange={(e)=> setIsChecked(e.target.checked)} size="large"></Checkbox>{" "} By ticking this this box, I/we (as “Data Subject”) grant
+                    my/our free, voluntary and unconditional consent to the
+                    collection and processing of all Personal Data (as defined
+                    below), and account or transaction information or records
+                    (collectively, the "Information") relating to me/us
+                    disclosed/transmitted by me/us in person or by my/our
+                    authorized agent/representative/s to the information
+                    database system of the Sunny Day Residences and/or any of
+                    its authorized agent/s or representative/s as Information
+                    controller, by whatever means in accordance with Republic
+                    Act (R.A.) 10173, otherwise known as the “Data Privacy Act
+                    of 2012” of the Republic of the Philippines, including its
+                    Implementing Rules and Regulations (IRR) as well as all
+                    other guidelines and issuances by the National Privacy
+                    Commission (NPC).{" "}
+                </span>
+
+                </>
+               
+              ),
+            },
+          ]}
+        />
         <div className="mt-10 mx-auto w-fit">
           <Button
             size="large"
@@ -350,7 +409,7 @@ const Review = () => {
           </Button>
           <Button
             size="large"
-            disabled={!paymentType }
+            disabled={!paymentType || !isChecked}
             onClick={handleSave}
             loading={createBookingOpts.loading}
           >

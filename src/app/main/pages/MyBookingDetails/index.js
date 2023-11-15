@@ -1,11 +1,13 @@
 'use client';
 import MainContainer from '@main_components/MainContainer';
-import { Card, Divider, Table, List, Button, Tag, Upload, message } from 'antd';
-import { useParams } from 'next/navigation';
+import { Card, Divider, Table, List, Button, Tag, Upload, message, Modal, Select } from 'antd';
+import { useParams, useRouter } from 'next/navigation';
 import useFetch from '../../../hooks/useFetch';
 import StatusTag from '../../../admin/components/StatusTag';
 import History from '../../../admin/components/BookingDetails/History';
 import usePost from '../../../hooks/usePost';
+import { useState } from 'react';
+import { getToken } from '../../context/auth/utils';
 
 const columns = [
   {
@@ -32,7 +34,7 @@ const columns = [
 
 const MyBookingDetails = () => {
   const params = useParams();
-
+  const [openModalAdditional, setOpenModalAdditional] = useState(false);
   const { response, refetch, loading } = useFetch({
     method: 'POST',
     url: '/booking/booking',
@@ -40,6 +42,8 @@ const MyBookingDetails = () => {
       id: params?.id,
     },
   });
+  const [amenity, setAmenity] = useState();
+  const navigate = useRouter()
 
   const [uploadReceipt, uploadReceiptOpts] = usePost();
 
@@ -116,6 +120,48 @@ const MyBookingDetails = () => {
     //   url: "/booking/upload_receipt",
     // })
   };
+
+
+  const [saveAmenity, saveAmenityOpts] = usePost({
+    onComplete: () => {
+     message.success("Item has been successfully added")
+
+      setOpenModalAdditional(false);
+
+      refetch();
+    },
+  });
+
+  const { response: amenities } = useFetch({
+    method: 'GET',
+    url: '/amenity',
+    params: {
+      isActive: true
+    }
+  });
+
+  const amenitiesChoices = amenities?.data
+    ? amenities?.data.map((e) => ({
+        label: e?.name,
+        value: e._id,
+        rate: e.rate,
+      }))
+    : [];
+
+    const onSaveAdditionals = () => {
+      saveAmenity(
+        {
+          method: 'POST',
+          url: '/booking/add_amenity',
+          data: {
+            id: params?.id,
+            amenity_id: JSON.stringify(amenity),
+            qty: 1,
+          },
+        },
+        getToken(),
+      );
+    };
 
   return (
     <>
@@ -282,11 +328,11 @@ const MyBookingDetails = () => {
                   </List.Item>
                 )}
               /> */}
-              {booking?.status === 'PENDING' ? (
+              {booking?.status === 'PENDING' || booking?.status === 'CHECK_IN'   ? (
                 <>
                   <Divider />
                   <div className="flex flex-row justify-between">
-                    <Upload
+                    {booking?.status === 'PENDING'  && <Upload
                       // showUploadList={false}
                       progress={{
                         strokeColor: {
@@ -328,12 +374,63 @@ const MyBookingDetails = () => {
                       <Button htmlType="button">
                         <span>Upload Receipt</span>
                       </Button>
-                    </Upload>
+                    </Upload>}
+                    
+                    <div>
+                      {booking?.status === "CHECK_IN" &&  <Button className='mr-4' onClick={()=> setOpenModalAdditional(true)}>
+                        <span>Add Additionals/Amenities</span>
+                      </Button>}
+                   
+                      {booking?.status === "PENDING" &&<Button htmlType="button" onClick={()=> navigate.push(`/main/my_account/rebooking/${params.id}`)}>
+                        <span>Rebooking</span>
+                      </Button>}
+                    </div>
                   </div>
                 </>
               ) : null}
             </div>
           </div>
+          <Modal
+          open={openModalAdditional}
+          title="Additionals"
+          onCancel={() => setOpenModalAdditional((prevState) => !prevState)}
+          footer={[
+            <Button
+              key="cancel"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={() => setOpenModalAdditional((prevState) => !prevState)}
+            >
+              Cancel
+            </Button>,
+            <Button
+              className="bg-info"
+              key="submit"
+              type="primary"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={onSaveAdditionals}
+              disabled={!amenity?.id}
+            >
+              Confirm
+            </Button>,
+          ]}
+        >
+          <Select
+            value={amenity?.id}
+            onChange={(id) =>
+              setAmenity({
+                id: id,
+                rate: amenitiesChoices.find((e) => e.value === id)?.rate,
+                name: amenitiesChoices.find((e) => e.value === id)?.label,
+              })
+            }
+            className="w-full"
+            size="large"
+            placeholder="Select Items"
+            options={amenitiesChoices}
+          ></Select>
+        </Modal>
         </Card>
       </MainContainer>
     </>

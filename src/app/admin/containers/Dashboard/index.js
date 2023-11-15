@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, Card, Col, Row, Select, Statistic } from 'antd';
-import React from 'react';
+import { Button, Card, Col, Row, Select, Statistic, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { FaPesoSign, FaPeopleLine } from 'react-icons/fa6';
 import { BsFillBookmarkFill, BsFillBookmarkCheckFill } from 'react-icons/bs';
 import useFetch from '../../../hooks/useFetch';
@@ -10,10 +10,10 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Controller, useForm } from 'react-hook-form';
 import usePost from '../../../hooks/usePost';
-import {dd} from "./handlers"
+import { dd } from './handlers';
 import { message } from 'antd';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { useAdminAuth } from '../../context/auth/context';
 dayjs.extend(customParseFormat);
@@ -25,12 +25,10 @@ const Dashboard = () => {
     method: 'GET',
     url: '/reports/dashboard',
   });
-
+  const [dates,setDates] = useState([dayjs().startOf('day'), dayjs().add(1, 'days').startOf('day')])
   const dashboard = response?.data;
 
-  const [fetchReports] = usePost({
-
-  })
+  const [fetchReports] = usePost({});
 
   const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
@@ -41,28 +39,51 @@ const Dashboard = () => {
 
   const reports = watch();
 
-  const { user } = useAdminAuth()
+  const { user } = useAdminAuth();
+
+  const { response: available_rooms_response, refetch, loading} = useFetch({
+    method:"POST",
+    url: "/room_types/available_rooms",
+    data: {
+      checkIn: dayjs(
+        dates ? dates[0] : dayjs().startOf('day'),
+        'YYYY-MM-DD',
+      ).format('YYYY-MM-DD'),
+      checkOut: dayjs(
+       dates
+          ? dates[1]
+          : dayjs().add(1, 'days').startOf('day'),
+        'YYYY-MM-DD',
+      ).format('YYYY-MM-DD')
+    }
+  });
+
+  useEffect(()=> {
+    refetch()
+  },[dates[0],dates[1]])
+
+
+  const available_rooms = available_rooms_response?.data?.map((e)=> ({
+    ...e,
+    key: e.name,
+    no_rooms: e.rooms?.length
+  }))
 
   const onGenerateReports = async (formData) => {
-
     const result = await fetchReports({
       method: 'POST',
       url: '/reports/extract_report',
-      data:{
+      data: {
         status: reports.status,
         from: reports.dates[0].toDate(),
-        to: reports.dates[1].toDate()
+        to: reports.dates[1].toDate(),
       },
-    })
+    });
 
-    if(result?.data?.bookings?.length === 0){
-
-      message.info(
-        `No records found`,
-      );
+    if (result?.data?.bookings?.length === 0) {
+      message.info(`No records found`);
       return;
     }
-    
 
     pdfMake.createPdf(dd(result.data, reports, user)).open();
   };
@@ -112,6 +133,47 @@ const Dashboard = () => {
               prefix={<FaPesoSign />}
               title="Sales Today"
               value={dashboard?.sales_today}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={24}>
+          <Card title="Available Rooms">
+            <RangePicker className='mb-4' value={dates}/>
+            <Table
+            loading={loading}
+              columns={[
+                {
+                  title: 'Room Type',
+                  key: "name",
+                  dataIndex: 'name',
+                },
+                {
+                  title: 'Room Amount',
+                  key:"room_rate",
+                  dataIndex: 'room_rate',
+                  render:(_, record)=> {
+                    return <span>{new Intl.NumberFormat('en-PH', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(record?.room_rate)}</span>
+                  }
+                },
+                {
+                  title: 'No. Available Rooms',
+                  key:"no_rooms",
+                  dataIndex: 'no_rooms',
+                },
+              ]}
+              expandable={{
+                expandedRowRender: (record) => (
+                <>
+                <span className='font-bold'>Room Number</span><br/>
+                {record?.rooms?.map((e)=> <><span>{e.room_number},{" "}</span></>)}
+                </>
+                ),
+                rowExpandable: (record) => true,
+              }}
+              dataSource={available_rooms}
             />
           </Card>
         </Col>

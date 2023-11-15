@@ -11,6 +11,8 @@ import {
   Modal,
   notification,
   message,
+  DatePicker,
+  Checkbox,
 } from 'antd';
 import usePost from '../../../hooks/usePost';
 import useFetch from '../../../hooks/useFetch';
@@ -20,10 +22,20 @@ import { useRouter as navgiationRouter, useParams } from 'next/navigation';
 import MultipleUpload from '../../components/MultipleUpload';
 import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
-import { PlusCircleFilled, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {
+  PlusCircleFilled,
+  DeleteOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
 import StatusTag from '../../components/StatusTag';
+import commaNumber from 'comma-number';
 const { confirm } = Modal;
 
+dayjs.extend(customParseFormat);
+
+const { RangePicker } = DatePicker;
 
 const RoomForm = () => {
   const navigate = navgiationRouter();
@@ -48,11 +60,14 @@ const RoomForm = () => {
     },
   );
 
-  const { handleSubmit, control, register, setValue, getValues } = useForm({
-    defaultValues: {
-      name: room_data?.data?.name || '',
-    },
-  });
+  const { handleSubmit, control, register, setValue, getValues, watch } =
+    useForm({
+      defaultValues: {
+        name: room_data?.data?.name || '',
+      },
+    });
+
+  const roomType = watch();
 
   const {
     handleSubmit: submitRoom,
@@ -70,14 +85,14 @@ const RoomForm = () => {
   });
 
   const [deleteRoomType, deleteRoomTypeOpts] = usePost({
-    onComplete:()=> {
-      message.success('Room Deleted!')
+    onComplete: () => {
+      message.success('Room Deleted!');
       navigate.push('/admin/rooms_management');
     },
-    onError:()=> {
-      message.error("Something went wrong")
-    }
-  })
+    onError: () => {
+      message.error('Something went wrong');
+    },
+  });
 
   const [EditRoomType] = usePost({
     onComplete: () => {
@@ -95,10 +110,10 @@ const RoomForm = () => {
   });
 
   const [deleteRoom, deleteRoomOpts] = usePost({
-    onComplete: ()=> {
-      refetch()
-    }
-  })
+    onComplete: () => {
+      refetch();
+    },
+  });
 
   const [CreateRoom] = usePost({
     onComplete: () => refetch(),
@@ -119,11 +134,25 @@ const RoomForm = () => {
         room_rate: data.room_rate,
         status: 'ACT',
         images: data.images,
+        promo: {
+          rate: 0,
+          startDate: null,
+          endDate: null,
+        },
+        isActivePromo: false,
       },
     });
   };
 
   const handleEdit = (data) => {
+    if(roomType?.isActivePromo && !roomType?.promo_rate ){
+      message.error("Room promo rate is required")
+      return
+    }else if(roomType?.isActivePromo && roomType.promo_date?.length < 2 ){
+      message.error("Room promo period is required")
+      return
+    }
+
     EditRoomType({
       method: 'POST',
       url: '/room_types/update_room_type',
@@ -140,6 +169,27 @@ const RoomForm = () => {
           room_rate: data.room_rate,
           status: 'ACT',
           images: data.images,
+          ...(!router?.id
+            ? {
+                promo: {
+                  rate: 0,
+                  startDate: null,
+                  endDate: null,
+                },
+                isActivePromo: false,
+              }
+            : {
+                promo: {
+                  rate: parseInt(data.promo_rate),
+                  startDate: data.promo_date[0]
+                    ? dayjs(data.promo_date[0]).format('YYYY-MM-DD')
+                    : null,
+                  endDate: data.promo_date[1]
+                    ? dayjs(data.promo_date[1]).format('YYYY-MM-DD')
+                    : null,
+                },
+                isActivePromo: data.isActivePromo,
+              }),
         },
       },
     });
@@ -154,6 +204,12 @@ const RoomForm = () => {
       setValue('room_rate', room_data?.data?.room_rate);
       setValue('description', room_data?.data?.details.description);
       setValue('images', room_data?.data?.images);
+      setValue('promo_rate', room_data?.data?.promo?.rate);
+      setValue('isActivePromo', room_data?.data?.isActivePromo);
+      setValue('promo_date', [
+        dayjs(room_data?.data?.promo?.startDate),
+        dayjs(room_data?.data?.promo?.endDate),
+      ]);
     }
   }, [room_data]);
 
@@ -189,7 +245,7 @@ const RoomForm = () => {
             method: 'POST',
             url: '/room_types/delete_roomtype',
             data: {
-              id:router?.id,
+              id: router?.id,
             },
           },
           // getToken(),
@@ -198,11 +254,32 @@ const RoomForm = () => {
     });
   };
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().startOf('day');
+  };
+
+  useEffect(() => {
+    if (!roomType?.isActivePromo) {
+      setValue('promo_rate', 0);
+      setValue('promo_date', []);
+    }
+  }, [roomType?.isActivePromo]);
+
   return (
     <>
       {contextText}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card title="Room Type" extra={<><Button danger onClick={showDeleteRoom}>Delete Room</Button></>}>
+        <Card
+          title="Room Type"
+          extra={
+            <>
+              <Button danger onClick={showDeleteRoom}>
+                Delete Room
+              </Button>
+            </>
+          }
+        >
           <Row gutter={[12, 12]}>
             <Col xs={24} sm={24} md={24} lg={24}>
               <div className="mb-1">
@@ -308,104 +385,174 @@ const RoomForm = () => {
             </Col>
           </Row>
         </Card>
-        <ActionBar okLabel="Save" disabled={uploadLoading || loading} okButtonType="submit" />
+        {router?.id && (
+          <Card title="Room Promo" rootClassName="mt-5">
+            <Row gutter={[24, 24]}>
+              <Col xs={24} sm={24} md={12} lg={12}>
+                <div className="mb-1">
+                  <span className="">Promo Rate</span>
+                </div>
+                <Controller
+                  name="promo_rate"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                  control={control}
+                  render={({ field }) => (
+                    <InputNumber
+                      {...field}
+                      disabled={!roomType?.isActivePromo}
+                      addonBefore="PHP"
+                      placeholder="Promo Rate"
+                      size="large"
+                      defaultValue={0}
+                      formatter={(value) => commaNumber(parseInt(value || 0))}
+                      className="w-full"
+                    />
+                  )}
+                />
+              </Col>
+              <Col xs={24} sm={24} md={12} lg={12}>
+                <div className="mb-1">
+                  <span className="">Promo Period</span>
+                </div>
+                <Controller
+                  name="promo_date"
+                  control={control}
+                  render={({ field }) => (
+                    <RangePicker
+                      {...field}
+                      disabled={!roomType?.isActivePromo}
+                      size="large"
+                      disabledDate={disabledDate}
+                      className="w-full"
+                    />
+                  )}
+                />
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={24}>
+                <Controller
+                  name="isActivePromo"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox {...field} checked={roomType?.isActivePromo}>
+                      Active
+                    </Checkbox>
+                  )}
+                />
+              </Col>
+            </Row>
+          </Card>
+        )}
+
+        <ActionBar
+          okLabel="Save"
+          disabled={uploadLoading || loading}
+          okButtonType="submit"
+        />
       </form>
       {router?.id ? (
-        <Card rootClassName="mt-5" title="Rooms">
-          <Table
-            columns={[
-              {
-                title: 'Room No.',
-                dataIndex: 'room_number',
-                key: 'room_number',
-              },
-              {
-                title: 'Status',
-                dataIndex: 'status',
-                key: 'status',
-                render: (_, record) => (
-                  <>
-                    <Select
-                      value={record.status}
-                      loading={updateRoomStatusOpts.loading}
-                      onChange={(e) => {
-                        updateRoomStatus({
-                          method: 'POST',
-                          url: '/room_types/update_room_status',
-                          data: {
-                            roomTypeId: router?.id,
-                            roomId: record._id,
-                            status: e,
-                          },
-                        });
-                      }}
-                      placeholder="status"
-                      options={[
-                        {
-                          label: 'Active',
-                          value: 'ACT',
-                        },
-                        {
-                          label: 'In-Active',
-                          value: 'INACTIVE',
-                        },
-                      ]}
-                    />
-                  </>
-                ),
-              },
-              {
-                title: 'Action',
-                render: (_, record) => {
-                  return (
+        <>
+          <Card rootClassName="mt-5" title="Rooms">
+            <Table
+              columns={[
+                {
+                  title: 'Room No.',
+                  dataIndex: 'room_number',
+                  key: 'room_number',
+                },
+                {
+                  title: 'Status',
+                  dataIndex: 'status',
+                  key: 'status',
+                  render: (_, record) => (
                     <>
-                      {' '}
-                      <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => deleteRoom({
-                          method: "POST",
-                          url: '/room_types/delete_room',
-                          data: {
-                            id: router?.id,
-                            room_id: record._id,
-                          }
-                        })}
+                      <Select
+                        value={record.status}
+                        loading={updateRoomStatusOpts.loading}
+                        onChange={(e) => {
+                          updateRoomStatus({
+                            method: 'POST',
+                            url: '/room_types/update_room_status',
+                            data: {
+                              roomTypeId: router?.id,
+                              roomId: record._id,
+                              status: e,
+                            },
+                          });
+                        }}
+                        placeholder="status"
+                        options={[
+                          {
+                            label: 'Active',
+                            value: 'ACT',
+                          },
+                          {
+                            label: 'In-Active',
+                            value: 'INACTIVE',
+                          },
+                        ]}
                       />
                     </>
-                  );
+                  ),
                 },
-              },
-            ]}
-            dataSource={room_data?.data?.rooms}
-            pagination={false}
-          />
-          <form onSubmit={submitRoom(handleAddRooms)}>
-            <div className="mt-4 flex flex-row justify-center items-center ">
-              <Controller
-                name="room_number"
-                control={controlRoom}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="mr-5"
-                    placeholder="Room Number"
-                    size="large"
-                    required
-                  />
-                )}
-              />
-              <Button
-                size="large"
-                icon={<PlusCircleFilled />}
-                className="flex items-center"
-                htmlType="submit"
-              >
-                Add Room
-              </Button>
-            </div>
-          </form>
-        </Card>
+                {
+                  title: 'Action',
+                  render: (_, record) => {
+                    return (
+                      <>
+                        {' '}
+                        <Button
+                          danger
+                          icon={<DeleteOutlined />}
+                          onClick={() =>
+                            deleteRoom({
+                              method: 'POST',
+                              url: '/room_types/delete_room',
+                              data: {
+                                id: router?.id,
+                                room_id: record._id,
+                              },
+                            })
+                          }
+                        />
+                      </>
+                    );
+                  },
+                },
+              ]}
+              dataSource={room_data?.data?.rooms}
+              pagination={false}
+            />
+            <form onSubmit={submitRoom(handleAddRooms)}>
+              <div className="mt-4 flex flex-row justify-center items-center ">
+                <Controller
+                  name="room_number"
+                  control={controlRoom}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      className="mr-5"
+                      placeholder="Room Number"
+                      size="large"
+                      required
+                    />
+                  )}
+                />
+                <Button
+                  size="large"
+                  icon={<PlusCircleFilled />}
+                  className="flex items-center"
+                  htmlType="submit"
+                >
+                  Add Room
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </>
       ) : null}
     </>
   );

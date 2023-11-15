@@ -11,6 +11,7 @@ import {
   Row,
   Select,
   Table,
+  message,
 } from 'antd';
 import PaymentDetails from '../../components/BookingDetails/PaymentDetails';
 import RoomDetails from '../../components/BookingDetails/RoomDetails';
@@ -35,6 +36,7 @@ const BookingDetails = () => {
   const [openModalAdditional, setOpenModalAdditional] = useState(false);
   const [openModalDiscount, setOpenModalDiscount] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [openModalSelectRoom, setOpenModalSelectRoom] = useState(false)
   const [amenity, setAmenity] = useState();
   const [discount, setDiscount] = useState();
   const { notif } = useNotification();
@@ -79,6 +81,9 @@ const BookingDetails = () => {
   const { response: amenities } = useFetch({
     method: 'GET',
     url: '/amenity',
+    params: {
+      isActive: true
+    }
   });
 
   const amenitiesChoices = amenities?.data
@@ -125,6 +130,37 @@ const BookingDetails = () => {
   });
 
   const booking = response?.data;
+
+  let { response: available_rooms } = useFetch({
+    method: "POST",
+    url: "/room_types/available_rooms",
+    data: {
+      checkIn: booking?.check_in,
+      checkOut: booking?.check_out
+    }
+  })
+
+  let rooms = []
+  available_rooms = available_rooms?.data?.forEach((room_type)=> room_type?.rooms?.forEach((room)=> {
+    rooms.push( {
+      room_id:room?._id,
+      roomtype_id:room_type?._id,
+      room_amount:room_type?.room_rate,
+      roomtype_name: room_type?.name,
+      room_num:room?.room_number,
+      no_person: room_type?.details?.no_person
+    })
+  }))
+
+  const roomOptions = rooms.map((e)=> ({
+    label: `${e.roomtype_name} (${e.room_num}) - ${new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+    }).format(e.room_amount)}`,
+    value: e.room_id
+  }))
+
+
 
   const handleUpdateStatus = () =>
     UpdateBookingStatus(updateBooking, booking, paymentAmount);
@@ -196,6 +232,32 @@ const BookingDetails = () => {
     );
   };
 
+  const [changeRoom] = usePost({
+    onComplete:()=> {
+      setOpenModalSelectRoom(false)
+      refetch();
+    }
+  })
+
+  const onSaveChangeRoom = (newroom, old) => {
+    const newRoom = rooms.find((e)=> e.room_id === newroom.value)
+    const oldRoom = {
+      room_id: old?.key,
+      room_rate: old.rate
+    };
+    changeRoom({
+      method: "POST",
+      url: "/booking/change_room",
+      data: {
+        id:params?.id,
+        oldRoom,
+        newRoom
+      }
+    })
+
+    message.success("Saved changes!")
+  }
+
   return (
     <>
       <div className="block relative">
@@ -209,7 +271,7 @@ const BookingDetails = () => {
             <Col sm={24} md={16} lg={16}>
               <Row gutter={[12, 12]}>
                 <Col md={24} lg={24}>
-                  <RoomDetails booking={booking} />
+                  <RoomDetails booking={booking} setOpenModalSelectRoom={setOpenModalSelectRoom} openModalSelectRoom={openModalSelectRoom} roomOptions={roomOptions} onSaveChangeRoom={onSaveChangeRoom}/>
                 </Col>
                 <Col md={24} lg={24}>
                   <PaymentDetails
@@ -315,7 +377,7 @@ const BookingDetails = () => {
               // )
               // }
               onKeyUp={(e) => {
-                console.log(e.keyCode);
+             
                 if (e.keyCode === 13) {
                   e.preventDefault();
                   e.target.blur();
@@ -365,6 +427,47 @@ const BookingDetails = () => {
             options={amenitiesChoices}
           ></Select>
         </Modal>
+        {/* <Modal
+          open={openModalSelectRoom}
+          title="Change Room"
+          onCancel={() => setOpenModalSelectRoom((prevState) => !prevState)}
+          footer={[
+            <Button
+              key="cancel"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={() => setOpenModalSelectRoom((prevState) => !prevState)}
+            >
+              Cancel
+            </Button>,
+            <Button
+              className="bg-info"
+              key="submit"
+              type="primary"
+              loading={false}
+              //  disabled={updateBookingOpts.loading}
+              onClick={onSaveAdditionals}
+              disabled={!amenity?.id}
+            >
+              Confirm
+            </Button>,
+          ]}
+        >
+          <Select
+            // value={amenity?.id}
+            onChange={(id) =>
+              setAmenity({
+                id: id,
+                rate: amenitiesChoices.find((e) => e.value === id)?.rate,
+                name: amenitiesChoices.find((e) => e.value === id)?.label,
+              })
+            }
+            className="w-full"
+            size="large"
+            placeholder="Select Items"
+            options={roomOptions}
+          ></Select>
+        </Modal> */}
         <Modal
           open={openModalDiscount}
           title="Discounts"

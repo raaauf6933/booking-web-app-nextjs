@@ -6,6 +6,7 @@ import { Barlow_Condensed } from 'next/font/google';
 import BookingContext from '../../context/booking/bookingContext';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useContext, useState } from 'react';
+import moment from 'moment';
 const inter = Barlow_Condensed({ weight: '100', subsets: ['latin'] });
 
 const MainRoomCard = (props) => {
@@ -32,7 +33,12 @@ const MainRoomCard = (props) => {
         payload: {
           room_id: data.rooms[qty]._id,
           roomtype_id: data._id,
-          room_amount: data.room_rate,
+          room_amount:
+            data?.promo?.rate &&
+            moment().isBetween(data?.promo?.startDate, data?.promo?.endDate) &&
+            data?.isActivePromo
+              ? data?.promo?.rate
+              : data.room_rate,
           roomtype_name: data.name,
           room_num: data.rooms[qty].room_number,
           no_person: data.details.no_person,
@@ -170,19 +176,43 @@ const MainRoomCard = (props) => {
             </Image.PreviewGroup>{' '}
           </div>
         </Col>
-        <Col  xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
           <div
             className="flex flex-col justify-center w-full"
             style={inter.style}
           >
             <span className="text-5xl font-bold pb-3">{data?.name}</span>
             <div className="pb-4">
-              <span className="text-3xl font-extrabold text-warning">
-                {new Intl.NumberFormat('en-PH', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(data?.room_rate)}
-              </span>
+              {data?.promo?.rate &&
+              moment().isBetween(
+                data?.promo?.startDate,
+                data?.promo?.endDate,
+              ) &&
+              data?.isActivePromo ? (
+                <>
+                  <span className="text-2xl line-through font-extrabold text-grey2">
+                    {new Intl.NumberFormat('en-PH', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(data?.room_rate)}
+                  </span>
+                  <br />
+                  <span className="text-3xl font-extrabold text-warning">
+                    {new Intl.NumberFormat('en-PH', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(data?.promo?.rate)}
+                  </span>
+                </>
+              ) : (
+                <span className="text-3xl font-extrabold text-warning">
+                  {new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(data?.room_rate)}
+                </span>
+              )}
+
               <span className="text-xl "> / Night</span>
             </div>
             <div className="pb-2 font-bold">
@@ -193,10 +223,13 @@ const MainRoomCard = (props) => {
               </span>
             </div>
             <div className=" h-28 overflow-y-scroll mb-7">
-              <pre className="text-lg" style={{
-                whiteSpace:"pre-wrap",
-                wordWrap:"break-word"
-              }}>
+              <pre
+                className="text-lg"
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  wordWrap: 'break-word',
+                }}
+              >
                 {data?.details.description}
                 {/* Sink into the plush, king-sized bed, adorned with premium-quality
               linens that guarantee a restful night's sleep. The thoughtful
