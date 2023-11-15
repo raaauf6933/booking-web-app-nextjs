@@ -285,7 +285,7 @@ const Review = () => {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(getSubTotal())}{' '}
-                  X {handleGetNoNights()} (Nights)
+                  X {handleGetNoNights()} Night(s)
                 </span>
               </div>
               <div className="flex justify-between">

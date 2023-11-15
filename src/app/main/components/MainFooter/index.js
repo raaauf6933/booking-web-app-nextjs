@@ -1,4 +1,4 @@
-import logo from "@assets/image/resort_logo.png"
+import logo from "@assets/image/logo_gv.png"
 
 const MainFooter = () => {
   return (
@@ -9,7 +9,7 @@ const MainFooter = () => {
             <a href="https://grandvillaresortandrestaurant.com/main" className="flex items-center">
               <img
                 src={logo.src}
-                className="h-8 mr-3"
+                className="w-56 mr-3"
                 alt="FlowBite Logo"
               />
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
