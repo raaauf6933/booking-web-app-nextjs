@@ -33,7 +33,7 @@ const SelectRoom = () => {
         <Col sm={24} md={18} lg={18}>
           <Card>
             <div className="p-5 overflow-y-scroll max-h-screen">
-              {response?.data?.length >= 1 ?response?.data?.filter((e)=> e?.rooms?.length >= 1)?.sort((a,b)=> parseInt(a.room_rate) - parseInt(b.room_rate)).map((room) => (
+              {response?.data?.length >= 1 || response?.data?.filter((e)=> e?.rooms?.length >= 1)?.length >=1 ?response?.data?.filter((e)=> e?.rooms?.length >= 1)?.sort((a,b)=> parseInt(a.room_rate) - parseInt(b.room_rate)).map((room) => (
                 <div className="mb-5">
                   <MainRoomCard
                     type="SELECT_ROOM"
