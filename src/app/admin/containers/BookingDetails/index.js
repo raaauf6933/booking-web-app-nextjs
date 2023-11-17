@@ -134,7 +134,7 @@ const BookingDetails = () => {
   const booking = response?.data;
   const additionals = booking?.additionals?.map((e)=> ({
     ...e,
-    rate: e.rate * e.qty
+    rate: e.rate
   }))
 
   let { response: available_rooms } = useFetch({
