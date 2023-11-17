@@ -59,6 +59,8 @@ const MainRoomCard = (props) => {
     // });
   };
 
+  console.log(bookingState)
+
   const handleRemoveRoom = () => {
     setQty((prevState) => (disableRemove ? prevState : prevState - 1));
     if (!disableRemove) {
@@ -184,7 +186,7 @@ const MainRoomCard = (props) => {
             <span className="text-5xl font-bold pb-3">{data?.name}</span>
             <div className="pb-4">
               {data?.promo?.rate &&
-              moment().isBetween(
+              moment(new Date(bookingState?.check_in)).isBetween(
                 data?.promo?.startDate,
                 data?.promo?.endDate,
               ) &&

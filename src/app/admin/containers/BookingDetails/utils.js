@@ -1,6 +1,6 @@
 import { getToken } from '../../context/auth/utils';
 
-export const UpdateBookingStatus = (updateBooking, booking, paymentAmount) => {
+export const UpdateBookingStatus = (updateBooking, booking, paymentAmount, remarks) => {
   switch (booking?.status) {
     case 'PENDING':
       updateBooking(
@@ -38,6 +38,7 @@ export const UpdateBookingStatus = (updateBooking, booking, paymentAmount) => {
             id: booking._id,
             status: booking?.status,
             paymentAmount,
+            remarks
           },
         },
         getToken(),

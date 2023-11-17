@@ -17,15 +17,15 @@ const SelectRoomPage = () => {
     <>
       <MainHeader title="Our Room" />
       <MainContainer>
-        {rooms && rooms?.length > 0 ? (
-          rooms.map((e) => {
+        {response?.data?.length >= 1 || response?.data?.filter((e)=> e?.rooms?.length >= 1)?.length >=1  ? (
+          response?.data?.filter((e)=> e?.rooms?.length >= 1)?.sort((a,b)=> parseInt(a.room_rate) - parseInt(b.room_rate)).map((room) =>  {
             return (
               <div className="pb-8">
                 <MainRoomCard
-                  image={e?.images?.map((e) => e.url)}
+                  image={room?.images?.map((e) => e.url)}
                   data={{
-                    room_rate: e.room_rate,
-                    ...e,
+                    room_rate: room.room_rate,
+                    ...room,
                   }}
                 />
               </div>

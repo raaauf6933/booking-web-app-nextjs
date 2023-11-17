@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Button, List, Skeleton } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import moment from 'moment';
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 const NotificationContent = ({ notifications }) => {
-  console.log(notifications);
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [list, setList] = useState(notifications || []);
+  const [list, setList] = useState(notifications?.reverse() || []);
   useEffect(() => {
     //   fetch(fakeDataUrl)
     //     .then((res) => res.json())
@@ -81,7 +81,7 @@ const NotificationContent = ({ notifications }) => {
                   </Link>
                 </span>
               }
-              description={item.message}
+              description={<><span>{item.message}</span><br/><span>{moment(item.created).fromNow()}</span></>}
             />
           </List.Item>
         )}

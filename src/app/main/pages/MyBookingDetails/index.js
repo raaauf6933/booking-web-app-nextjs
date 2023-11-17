@@ -1,6 +1,20 @@
 'use client';
 import MainContainer from '@main_components/MainContainer';
-import { Card, Divider, Table, List, Button, Tag, Upload, message, Modal, Select } from 'antd';
+import {
+  Card,
+  Divider,
+  Table,
+  List,
+  Button,
+  Tag,
+  Upload,
+  message,
+  Modal,
+  Select,
+  Input,
+  Rate,
+  InputNumber,
+} from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import useFetch from '../../../hooks/useFetch';
 import StatusTag from '../../../admin/components/StatusTag';
@@ -32,6 +46,19 @@ const columns = [
   },
 ];
 
+const additionals_colums = [
+  {
+    title: 'Item',
+    dataIndex: 'name',
+  },
+  {
+    title: 'Rate',
+    dataIndex: 'rate',
+  },
+  {
+    title: 'Qty',
+    dataIndex: 'qty',
+  }]
 const MyBookingDetails = () => {
   const params = useParams();
   const [openModalAdditional, setOpenModalAdditional] = useState(false);
@@ -43,10 +70,12 @@ const MyBookingDetails = () => {
     },
   });
   const [amenity, setAmenity] = useState();
-  const navigate = useRouter()
-
+  const navigate = useRouter();
+  const [openModalRate, setOpenModalRate] = useState(false);
+  const [rate, setRate] = useState(0);
+  const [feedback, setFeedback] = useState('');
   const [uploadReceipt, uploadReceiptOpts] = usePost();
-
+  const [noAmenity, setNoAmenity] = useState(1);
   const booking = response?.data;
 
   const handleGetNoNights = () => {
@@ -68,6 +97,22 @@ const MyBookingDetails = () => {
     return roomTotalAmount;
   };
 
+
+  const additionals = booking?.additionals?.map((e)=> ({
+    ...e,
+    rate:  new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+    }).format(e.rate)
+  }))
+
+
+  const getTotalAdditionals = () => {
+    return booking?.billing?.additional_total
+  }
+
+
+
   const handleGetRooms = () => {
     const removeDuplicates = booking?.rooms?.filter(
       (v, i, a) => a.findIndex((t) => t.roomtype_id === v.roomtype_id) === i,
@@ -85,6 +130,7 @@ const MyBookingDetails = () => {
     return countRooms;
   };
 
+
   const getSubTotal = () => {
     let total = 0;
     handleGetRooms()?.map((e) => (total += e.amount));
@@ -92,7 +138,7 @@ const MyBookingDetails = () => {
   };
 
   const getTotalAmount = () => {
-    return getSubTotal() * handleGetNoNights();
+    return (getSubTotal() * handleGetNoNights() ) + getTotalAdditionals();
   };
 
   const handleVat = () => {
@@ -121,10 +167,9 @@ const MyBookingDetails = () => {
     // })
   };
 
-
   const [saveAmenity, saveAmenityOpts] = usePost({
     onComplete: () => {
-     message.success("Item has been successfully added")
+      message.success('Item has been successfully added');
 
       setOpenModalAdditional(false);
 
@@ -136,8 +181,8 @@ const MyBookingDetails = () => {
     method: 'GET',
     url: '/amenity',
     params: {
-      isActive: true
-    }
+      isActive: true,
+    },
   });
 
   const amenitiesChoices = amenities?.data
@@ -148,20 +193,43 @@ const MyBookingDetails = () => {
       }))
     : [];
 
-    const onSaveAdditionals = () => {
-      saveAmenity(
-        {
-          method: 'POST',
-          url: '/booking/add_amenity',
-          data: {
-            id: params?.id,
-            amenity_id: JSON.stringify(amenity),
-            qty: 1,
-          },
+  const onSaveAdditionals = () => {
+    saveAmenity(
+      {
+        method: 'POST',
+        url: '/booking/add_amenity',
+        data: {
+          id: params?.id,
+          amenity_id: JSON.stringify(amenity),
+          qty: noAmenity,
+          type: 'guest',
         },
-        getToken(),
-      );
-    };
+      },
+      getToken(),
+    );
+  };
+
+  const [saveFeedback] = usePost({
+    onComplete: () => {
+      setOpenModalRate(false);
+      refetch();
+      message.success('Feedback has been submitted');
+    },
+  });
+
+  const onSubmitFeedback = () => {
+    saveFeedback({
+      method: 'POST',
+      url: '/booking/feedback',
+      data: {
+        id: params?.id,
+        feedback,
+        rate,
+      },
+    });
+  };
+
+
 
   return (
     <>
@@ -190,8 +258,17 @@ const MyBookingDetails = () => {
             pagination={false}
             dataSource={handleGetRooms()?.map((e) => ({
               ...e,
+              rate: new Intl.NumberFormat('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(e.rate),
+              amount: new Intl.NumberFormat('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(e.amount),
             }))}
           />
+          <Table caption={<div className='text-xl p-5'>Additionals</div>} dataSource={additionals}   columns={additionals_colums} />
           <div className="mt-2">
             <div className="flex justify-between">
               <span className="font-bold text-lg">Sub-total</span>
@@ -201,6 +278,16 @@ const MyBookingDetails = () => {
                   currency: 'PHP',
                 }).format(getSubTotal())}{' '}
                 X {handleGetNoNights()} Night(s)
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-bold text-lg">Additionals</span>
+              <span className="text-lg">
+                {new Intl.NumberFormat('en-PH', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(getTotalAdditionals())}
+            
               </span>
             </div>
             <div className="flex justify-between">
@@ -328,62 +415,92 @@ const MyBookingDetails = () => {
                   </List.Item>
                 )}
               /> */}
-              {booking?.status === 'PENDING' || booking?.status === 'CHECK_IN'   ? (
+              {booking?.status === 'PENDING' ||
+              booking?.status === 'CHECK_IN' ||
+              booking?.status === 'CHECK_OUT' ? (
                 <>
                   <Divider />
                   <div className="flex flex-row justify-between">
-                    {booking?.status === 'PENDING'  && <Upload
-                      // showUploadList={false}
-                      progress={{
-                        strokeColor: {
-                          '0%': '#108ee9',
-                          '100%': '#87d068',
-                        },
-                        strokeWidth: 3,
-                        format: (percent) =>
-                          percent && `${parseFloat(percent.toFixed(2))}%`,
-                      }}
-                      onChange={(info) => {
-                        if (info.file.status === 'done') {
-                          message.success(
-                            `${info.file.name} file uploaded successfully`,
-                          );
-                          refetch();
-                        }
-                      }}
-                      disabled={loading}
-                      action={`${process.env.NEXT_PUBLIC_API_URL}/booking/upload_receipt`}
-                      data={{
-                        data: JSON.stringify({
-                          id: params?.id,
-                        }),
-                      }}
-                      beforeUpload={(file) => {
-                        const isImage =
-                          file.type === 'image/png' ||
-                          file.type === 'image/jpg' ||
-                          file.type === 'image/jpeg';
-                        if (!isImage) {
-                          message.error(
-                            `${file.name} is not an image file, must be in png, jpg, jpeg only`,
-                          );
-                        }
-                        return isImage || Upload.LIST_IGNORE;
-                      }}
-                    >
-                      <Button htmlType="button">
-                        <span>Upload Receipt</span>
-                      </Button>
-                    </Upload>}
-                    
-                    <div>
-                      {booking?.status === "CHECK_IN" &&  <Button className='mr-4' onClick={()=> setOpenModalAdditional(true)}>
-                        <span>Add Additionals/Amenities</span>
-                      </Button>}
-                   
-                      {booking?.status === "PENDING" &&<Button htmlType="button" onClick={()=> navigate.push(`/main/my_account/rebooking/${params.id}`)}>
-                        <span>Rebooking</span>
-                      </Button>}
+                    {booking?.status === 'PENDING' && (
+                      <Upload
+                        // showUploadList={false}
+                        progress={{
+                          strokeColor: {
+                            '0%': '#108ee9',
+                            '100%': '#87d068',
+                          },
+                          strokeWidth: 3,
+                          format: (percent) =>
+                            percent && `${parseFloat(percent.toFixed(2))}%`,
+                        }}
+                        onChange={(info) => {
+                          if (info.file.status === 'done') {
+                            message.success(
+                              `${info.file.name} file uploaded successfully`,
+                            );
+                            refetch();
+                          }
+                        }}
+                        disabled={loading}
+                        action={`${process.env.NEXT_PUBLIC_API_URL}/booking/upload_receipt`}
+                        data={{
+                          data: JSON.stringify({
+                            id: params?.id,
+                          }),
+                        }}
+                        beforeUpload={(file) => {
+                          const isImage =
+                            file.type === 'image/png' ||
+                            file.type === 'image/jpg' ||
+                            file.type === 'image/jpeg';
+                          if (!isImage) {
+                            message.error(
+                              `${file.name} is not an image file, must be in png, jpg, jpeg only`,
+                            );
+                          }
+                          return isImage || Upload.LIST_IGNORE;
+                        }}
+                      >
+                        <Button htmlType="button">
+                          <span>Upload Receipt</span>
+                        </Button>
+                      </Upload>
+                    )}
+
+                    <div className="w-full">
+                      {booking?.status === 'CHECK_IN' && (
+                        <Button
+                          className="mr-4"
+                          onClick={() => setOpenModalAdditional(true)}
+                        >
+                          <span>Add Additionals/Amenities</span>
+                        </Button>
+                      )}
+
+                      {booking?.status === 'PENDING' && (
+                        <Button
+                          htmlType="button"
+                          onClick={() =>
+                            navigate.push(
+                              `/main/my_account/rebooking/${params.id}`,
+                            )
+                          }
+                        >
+                          <span>Rebooking</span>
+                        </Button>
+                      )}
+
+                      {booking?.status === 'CHECK_OUT' &&
+                        !booking?.feedback && (
+                          <Button
+                            className="w-full"
+                            size="large"
+                            htmlType="button"
+                            onClick={() => setOpenModalRate(true)}
+                          >
+                            <span>Rate Booking</span>
+                          </Button>
+                        )}
                     </div>
                   </div>
                 </>
@@ -391,46 +508,112 @@ const MyBookingDetails = () => {
             </div>
           </div>
           <Modal
-          open={openModalAdditional}
-          title="Additionals"
-          onCancel={() => setOpenModalAdditional((prevState) => !prevState)}
-          footer={[
-            <Button
-              key="cancel"
-              loading={false}
-              //  disabled={updateBookingOpts.loading}
-              onClick={() => setOpenModalAdditional((prevState) => !prevState)}
-            >
-              Cancel
-            </Button>,
-            <Button
-              className="bg-info"
-              key="submit"
-              type="primary"
-              loading={false}
-              //  disabled={updateBookingOpts.loading}
-              onClick={onSaveAdditionals}
-              disabled={!amenity?.id}
-            >
-              Confirm
-            </Button>,
-          ]}
-        >
-          <Select
-            value={amenity?.id}
-            onChange={(id) =>
-              setAmenity({
-                id: id,
-                rate: amenitiesChoices.find((e) => e.value === id)?.rate,
-                name: amenitiesChoices.find((e) => e.value === id)?.label,
-              })
-            }
-            className="w-full"
-            size="large"
-            placeholder="Select Items"
-            options={amenitiesChoices}
-          ></Select>
-        </Modal>
+            open={openModalAdditional}
+            title="Additionals"
+            onCancel={() => setOpenModalAdditional((prevState) => !prevState)}
+            footer={[
+              <Button
+                key="cancel"
+                loading={false}
+                //  disabled={updateBookingOpts.loading}
+                onClick={() =>
+                  setOpenModalAdditional((prevState) => !prevState)
+                }
+              >
+                Cancel
+              </Button>,
+              <Button
+                className="bg-info"
+                key="submit"
+                type="primary"
+                loading={false}
+                //  disabled={updateBookingOpts.loading}
+                onClick={onSaveAdditionals}
+                disabled={!amenity?.id}
+              >
+                Confirm
+              </Button>,
+            ]}
+          >
+            <Select
+              value={amenity?.id}
+              onChange={(id) =>
+                setAmenity({
+                  id: id,
+                  rate: amenitiesChoices.find((e) => e.value === id)?.rate,
+                  name: amenitiesChoices.find((e) => e.value === id)?.label,
+                })
+              }
+              className="w-full"
+              size="large"
+              placeholder="Select Items"
+              options={amenitiesChoices}
+            ></Select>
+            <InputNumber
+              placeholder="Quantity"
+              size="large"
+              defaultValue={1}
+              value={noAmenity}
+              onChange={(e) =>
+                setNoAmenity((prevState) =>
+                  isNaN(parseInt(e)) ? prevState : parseInt(e),
+                )
+              }
+              className="mt-2 w-full"
+              min={0}
+              max={5}
+              onKeyUp={(e) => {
+                e.preventDefault();
+                e.target.blur();
+              }}
+              type="number"
+            />
+          </Modal>{' '}
+          <Modal
+            open={openModalRate}
+            title="Feedback"
+            onCancel={() => setOpenModalRate((prevState) => !prevState)}
+            footer={[
+              <Button
+                key="cancel"
+                loading={false}
+                //  disabled={updateBookingOpts.loading}
+                onClick={() => setOpenModalRate((prevState) => !prevState)}
+              >
+                Cancel
+              </Button>,
+              <Button
+                className="bg-info"
+                key="submit"
+                type="primary"
+                loading={false}
+                //  disabled={updateBookingOpts.loading}
+                onClick={onSubmitFeedback}
+                disabled={!feedback || !rate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <div className=" w-full">
+              <Input.TextArea
+                className="mt-2"
+                placeholder="Feedback"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+              />
+              <div className="mt-4 flex flex-col items-center justify-center">
+                <span className="font-semibold mt-2">Leave a Star Rating</span>
+                <div>
+                  <Rate
+                    className="w-full text-3xl"
+                    value={rate}
+                    onChange={(e) => setRate(e)}
+                  />
+                </div>
+              </div>
+            </div>
+          </Modal>
         </Card>
       </MainContainer>
     </>

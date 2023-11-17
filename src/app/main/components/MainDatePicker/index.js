@@ -1,7 +1,7 @@
 'use client';
 import Card from '../AntD/card';
 import DatePicker from '../AntD/datepicker';
-import { Button, Col, InputNumber, Row } from 'antd';
+import { Button, Col, InputNumber, Row, message } from 'antd';
 import React, { useContext, useState } from 'react';
 
 import dayjs from 'dayjs';
@@ -11,6 +11,7 @@ import BookingContext from '../../context/booking/bookingContext';
 import { hasNull } from '../../../utils/hasNull';
 import { useNotification } from '../../context/notification/context';
 import { useClientAuth } from '../../context/auth/context';
+import usePost from '../../../hooks/usePost';
 dayjs.extend(customParseFormat);
 
 const MainDatePicker = () => {
@@ -22,7 +23,7 @@ const MainDatePicker = () => {
     check_out: '' || bookingState.check_out,
   });
   const [noGuest, setNoGuest] = useState(1);
-
+  const [noChildren, setNoChildren] = useState(0);
   const { isAuthenticated } = useClientAuth();
 
   const onChangeCheckIn = (date, dateString) => {
@@ -40,7 +41,11 @@ const MainDatePicker = () => {
     setDates((prevState) => ({ ...prevState, check_out: dateString }));
   };
 
-  const handleSubmitDate = () => {
+  const [availableRooms] = usePost({
+    onComplete: () => null,
+  });
+
+  const handleSubmitDate = async () => {
     if (!hasNull(dates)) {
       bookingDispatch({
         type: 'SET_DATES',
@@ -48,10 +53,25 @@ const MainDatePicker = () => {
       });
       bookingDispatch({
         type: 'SET_NO_GUEST',
-        payload: noGuest,
+        payload: noGuest + noChildren,
       });
 
-      navigate.push('/main/booking/select_room');
+      const result = await availableRooms({
+        url: '/room_types/available_rooms',
+        method: 'POST',
+        data: {
+          checkIn: dates.check_in,
+          checkOut: dates.check_out,
+          noGuest: noGuest + noChildren,
+        },
+      });
+
+      if (result?.data?.length > 0) {
+        navigate.push('/main/booking/select_room');
+        return;
+      } else {
+        message.info('No available rooms for selected dates & No. of guest');
+      }
     }
   };
 
@@ -101,7 +121,7 @@ const MainDatePicker = () => {
             <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
               <div className="w-full">
                 <div className="px-2 pb-2  font-bold opacity-50">
-                  <label>NO. GUEST</label>
+                  <label>NO. ADULT</label>
                 </div>
                 <InputNumber
                   defaultValue={1}
@@ -123,13 +143,43 @@ const MainDatePicker = () => {
               </div>
             </Col>
             <Col xs={24} sm={24} md={24} xl={24} xxl={6}>
+              <div className="w-full">
+                <div className="px-2 pb-2  font-bold opacity-50">
+                  <label>NO. CHILDREN</label>
+                </div>
+                <InputNumber
+                  defaultValue={0}
+                  value={noChildren}
+                  min={0}
+                  max={5}
+                  onChange={(e) =>
+                    setNoChildren((prevState) =>
+                      isNaN(parseInt(e)) ? prevState : parseInt(e),
+                    )
+                  }
+                  // onKeyUp={(e) => {
+                  //   e.preventDefault();
+                  //   e.target.blur();
+                  // }}
+                  type="number"
+                  className="h-16 w-full inline-flex items-center text-xl"
+                />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={24} xl={24} xxl={24}>
               <Button
                 className="w-full bg-warning border-white focus:border-white outline-none  h-16"
                 type="default"
                 onClick={() => handleSubmitDate()}
                 disabled={hasNull(dates)}
               >
-                <span className={`${hasNull(dates) ? 'text-grey2' : 'text-white'} text-md`}>Check Availability</span>
+                <span
+                  className={`${
+                    hasNull(dates) ? 'text-grey2' : 'text-white'
+                  } text-md`}
+                >
+                  Check Availability
+                </span>
               </Button>
             </Col>
           </Row>

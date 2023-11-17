@@ -20,6 +20,7 @@ import { useAdminAuth } from '../../context/auth/context';
 import logo from '@assets/image/logo_gv.png';
 import NotificationContent from './components/NotificationContent';
 import useFetch from '../../../hooks/useFetch';
+import usePost from '../../../hooks/usePost';
 
 const { Header, Content, Footer, Sider } = AntDLayout;
 
@@ -29,12 +30,15 @@ function DashboardLayout({ children }) {
   const navigate = useRouter();
   const route = usePathname();
 
-  const { response: notification_response } = useFetch({
+  const { response: notification_response, refetch} = useFetch({
     method: "GET",
     url: "/notification/"
   })
 
-  const notifications = notification_response?.data
+  const [viewNotif] = usePost({
+    onComplete:()=> refetch()
+  })
+  const notifications = notification_response?.data?.events
 
   return (
     <ProtectedPage>
@@ -82,8 +86,16 @@ function DashboardLayout({ children }) {
                     trigger="click"
                     className='w-full'
                     rootClassName='w-96'
+                    onOpenChange={(e)=> {
+                      if(e){
+                        viewNotif({
+                          method:"POST",
+                          url:"/site_settings/view_notif"
+                        })
+                      }
+                    }}
                   >
-                    <Badge count={notifications?.length} className='cursor-pointer'>
+                    <Badge count={notification_response?.data?.notif?.noNotif} className='cursor-pointer'>
                       <Avatar shape="circle" icon={<BellOutlined />} />
                     </Badge>
                   </Popover>

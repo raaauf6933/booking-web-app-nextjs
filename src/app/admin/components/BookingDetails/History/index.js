@@ -17,6 +17,19 @@ const History = ({ booking }) => {
             </div>
           ),
         };
+        case 'FEEDBACK':
+        return {
+          key: index,
+          children: (
+            <div className="flex justify-between">
+              <span>{event.message}</span>{' '}
+              <span>
+                {new Date(event?.created).toDateString()}{' '}
+                {new Date(event?.created).toLocaleTimeString()}
+              </span>
+            </div>
+          ),
+        };
       case 'UPDATE_EXPIRED':
         return {
           dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,

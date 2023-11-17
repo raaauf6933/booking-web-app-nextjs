@@ -138,7 +138,7 @@ const Dashboard = () => {
         </Col>
         <Col xs={24} sm={24} md={24} lg={24}>
           <Card title="Available Rooms">
-            <RangePicker className='mb-4' value={dates}/>
+            <RangePicker className='mb-4' value={dates} onChange={(e)=> setDates(e?.length === 2 ? e : [dayjs().startOf('day'), dayjs().add(1, 'days').startOf('day')])}/>
             <Table
             loading={loading}
               columns={[
