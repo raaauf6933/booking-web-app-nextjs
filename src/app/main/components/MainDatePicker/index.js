@@ -66,7 +66,7 @@ const MainDatePicker = () => {
         },
       });
 
-      if (result?.data?.length > 0) {
+      if (result?.data?.length > 0 || result?.data?.filter((e)=> e?.rooms?.length >= 1)?.length >=1) {
         navigate.push('/main/booking/select_room');
         return;
       } else {
